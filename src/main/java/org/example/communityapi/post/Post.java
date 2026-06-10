@@ -90,4 +90,16 @@ public class Post {
             this.postImage = postImage;
         }
     }
+
+    // 좋아요 등록 - 증가
+    public void increaseLikeCount() {
+        this.likeCount = this.likeCount + 1;
+    }
+
+    // 좋아요 취소 - 감소
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount = this.likeCount - 1;
+        }
+    }
 }
