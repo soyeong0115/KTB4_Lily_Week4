@@ -75,4 +75,9 @@ public class UserRepository {
     public User findById(int userId) {
         return users.get(userId);
     }
+
+    // 사용자 삭제
+    public void delete(int userId) {
+        users.remove(userId);
+    }
 }
