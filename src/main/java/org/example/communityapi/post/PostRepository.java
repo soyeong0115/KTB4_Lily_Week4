@@ -70,4 +70,9 @@ public class PostRepository {
     public Post findById(int postId) {
         return posts.get(postId);
     }
+
+    // 게시글 삭제
+    public void delete(int postId) {
+        posts.remove(postId);
+    }
 }

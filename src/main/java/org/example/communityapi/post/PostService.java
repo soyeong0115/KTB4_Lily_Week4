@@ -3,9 +3,15 @@ package org.example.communityapi.post;
 import org.example.communityapi.comment.Comment;
 import org.example.communityapi.comment.CommentRepository;
 import org.example.communityapi.comment.dto.CommentResponse;
+import org.example.communityapi.post.dto.CreatePostRequest;
+import org.example.communityapi.post.dto.CreatePostResponse;
 import org.example.communityapi.post.dto.PostDetailResponse;
 import org.example.communityapi.post.dto.PostListResponse;
+import org.example.communityapi.post.dto.UpdatePostRequest;
+import org.example.communityapi.post.dto.UpdatePostResponse;
 import org.example.communityapi.post.dto.WriterResponse;
+import org.example.communityapi.user.User;
+import org.example.communityapi.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,11 +22,90 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
     // Repository 주입하기
-    public PostService(PostRepository postRepository, CommentRepository commentRepository) {
+    public PostService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+    }
+
+    // 게시글 작성
+    public CreatePostResponse createPost(Integer userId, CreatePostRequest request) {
+        if (userId == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        User user = userRepository.findById(userId);
+
+        if (user == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        if (request.getTitle() == null || request.getTitle().isBlank()) {
+            throw new IllegalArgumentException("invalid_request");
+        }
+
+        if (request.getContent() == null || request.getContent().isBlank()) {
+            throw new IllegalArgumentException("invalid_request");
+        }
+
+        Post post = postRepository.save(
+                request.getTitle(),
+                request.getContent(),
+                request.getPostImage(),
+                "2026-06-10 10:00:00",
+                user.getUserId(),
+                user.getNickname(),
+                user.getProfileImage()
+        );
+
+        return new CreatePostResponse(post.getPostId());
+    }
+
+    // 게시글 수정
+    public UpdatePostResponse updatePost(Integer userId, int postId, UpdatePostRequest request) {
+        if (userId == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        Post post = postRepository.findById(postId);
+
+        if (post == null) {
+            throw new IllegalArgumentException("post_not_found");
+        }
+
+        if (post.getWriterId() != userId) {
+            throw new IllegalArgumentException("forbidden");
+        }
+
+        if (request.getTitle() == null && request.getContent() == null && request.getPostImage() == null) {
+            throw new IllegalArgumentException("invalid_request");
+        }
+
+        post.update(request.getTitle(), request.getContent(), request.getPostImage());
+
+        return new UpdatePostResponse(post.getPostId());
+    }
+
+    // 게시글 삭제
+    public void deletePost(Integer userId, int postId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        Post post = postRepository.findById(postId);
+
+        if (post == null) {
+            throw new IllegalArgumentException("post_not_found");
+        }
+
+        if (post.getWriterId() != userId) {
+            throw new IllegalArgumentException("forbidden");
+        }
+
+        postRepository.delete(postId);
     }
 
     // 게시글 목록 조회
