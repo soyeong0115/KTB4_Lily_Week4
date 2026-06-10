@@ -74,4 +74,14 @@ public class CommentRepository {
 
         return count;
     }
+
+    // commentId로 댓글 하나 조회
+    public Comment findById(int commentId) {
+        return comments.get(commentId);
+    }
+
+    // 댓글 삭제
+    public void delete(int commentId) {
+        comments.remove(commentId);
+    }
 }
