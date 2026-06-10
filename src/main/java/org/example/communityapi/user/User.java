@@ -35,4 +35,19 @@ public class User {
     public String getProfileImage() {
         return profileImage;
     }
+
+    // 프로필 수정
+    public void updateProfile(String nickname, String profileImage) {
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+        if (profileImage != null) {
+            this.profileImage = profileImage;
+        }
+    }
+
+    // 비밀번호 수정
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
