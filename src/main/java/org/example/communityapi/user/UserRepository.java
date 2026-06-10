@@ -70,4 +70,9 @@ public class UserRepository {
 
         return false;
     }
+
+    // userId로 사용자 찾기
+    public User findById(int userId) {
+        return users.get(userId);
+    }
 }
