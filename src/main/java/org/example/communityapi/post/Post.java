@@ -56,16 +56,14 @@ public class Post {
             String content,
             String postImage,
             String createdAt,
-            int likeCount,
-            int viewCount,
             User writer
     ) {
         this.title = title;
         this.content = content;
         this.postImage = postImage;
         this.createdAt = createdAt;
-        this.likeCount = likeCount;
-        this.viewCount = viewCount;
+        this.likeCount = 0;
+        this.viewCount = 0;
         this.writer = writer;
     }
 
