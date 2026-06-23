@@ -22,7 +22,7 @@ public class UserService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
@@ -67,7 +67,7 @@ public class UserService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
@@ -98,13 +98,13 @@ public class UserService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        userRepository.delete(userId);
+        userRepository.delete(user);
     }
 
     // 닉네임 형식 검사

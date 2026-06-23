@@ -13,7 +13,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
 
-    // UserRepository를 주입받가
+    // UserRepository를 주입받기
     public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -30,12 +30,14 @@ public class AuthService {
             throw new IllegalArgumentException("nickname_duplicated");
         }
 
-        User user = userRepository.save(
+        User user = new User(
                 request.getEmail(),
                 request.getPassword(),
                 request.getNickname(),
                 request.getProfileImage()
         );
+
+        userRepository.save(user);
 
         return new SignupResponse(user.getUserId());
     }
