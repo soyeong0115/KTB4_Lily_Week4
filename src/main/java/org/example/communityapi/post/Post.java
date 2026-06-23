@@ -9,30 +9,47 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // 게시글 번호
     @Column(name = "post_id")
     private int postId;
 
+    // 제목
     @Column(nullable = false)
     private String title;
 
+    // 내용
     @Column(nullable = false)
     private String content;
 
+    // 이미지
     @Column(name = "post_image")
     private String postImage;
 
+    // 작성 시간
     @Column(name = "created_at")
     private String createdAt;
 
+    // 수정 시간
+    @Column(name = "updated_at")
+    private String updatedAt;
+
+    // 댓글수
+
+    // 좋아요수
     @Column(name = "like_count")
     private int likeCount;
 
+    // 조회수
     @Column(name = "view_count")
     private int viewCount;
 
+    // 사용자 번호
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User writer;
+
+    protected Post() {
+    }
 
     public Post(
             String title,
