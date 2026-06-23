@@ -1,11 +1,28 @@
 package org.example.communityapi.user;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private int userId;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String nickname;
+
+    @Column(name = "profile_image")
     private String profileImage;
 
     public User(int userId, String email, String password, String nickname, String profileImage) {
