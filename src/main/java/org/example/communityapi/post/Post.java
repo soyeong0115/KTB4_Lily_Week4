@@ -1,41 +1,55 @@
 package org.example.communityapi.post;
 
+import jakarta.persistence.*;
+import org.example.communityapi.user.User;
+
+@Entity
+@Table(name = "posts")
 public class Post {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private int postId;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String content;
+
+    @Column(name = "post_image")
     private String postImage;
+
+    @Column(name = "created_at")
     private String createdAt;
+
+    @Column(name = "like_count")
     private int likeCount;
+
+    @Column(name = "view_count")
     private int viewCount;
 
-    private int writerId;
-    private String writerNickname;
-    private String writerProfileImage;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User writer;
 
     public Post(
-            int postId,
             String title,
             String content,
             String postImage,
             String createdAt,
             int likeCount,
             int viewCount,
-            int writerId,
-            String writerNickname,
-            String writerProfileImage
+            User writer
     ) {
-        this.postId = postId;
         this.title = title;
         this.content = content;
         this.postImage = postImage;
         this.createdAt = createdAt;
         this.likeCount = likeCount;
         this.viewCount = viewCount;
-        this.writerId = writerId;
-        this.writerNickname = writerNickname;
-        this.writerProfileImage = writerProfileImage;
+        this.writer = writer;
     }
 
     public int getPostId() {
@@ -66,16 +80,8 @@ public class Post {
         return viewCount;
     }
 
-    public int getWriterId() {
-        return writerId;
-    }
-
-    public String getWriterNickname() {
-        return writerNickname;
-    }
-
-    public String getWriterProfileImage() {
-        return writerProfileImage;
+    public User getWriter() {
+        return writer;
     }
 
     // 게시글 수정
