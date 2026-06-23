@@ -1,40 +1,68 @@
 package org.example.communityapi.comment;
 
+import jakarta.persistence.*;
+
+import org.example.communityapi.user.User;
+import org.example.communityapi.post.Post;
+
+@Entity
+@Table(name = "comments")
 public class Comment {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    // 댓글 번호
+    @Column(name = "comment_id")
     private int commentId;
-    private int postId;
+
+    // 내용
+    @Column(nullable = false)
     private String content;
+
+    // 작성 시간
+    @Column(name = "created_at")
     private String createdAt;
 
-    private int writerId;
-    private String writerNickname;
-    private String writerProfileImage;
+    // 수정 시간
+    //@Column(name = "updated_at")
+    //private String updatedAt;
+
+    // 삭제 여부
+    //@Column(name = "is_deleted")
+    //private boolean isDeleted;
+
+    // 사용자 번호
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User writer;
+
+    // 게시글 번호
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    protected Comment() {
+    }
 
     public Comment(
-            int commentId,
-            int postId,
+            Post post,
             String content,
             String createdAt,
-            int writerId,
-            String writerNickname,
-            String writerProfileImage
+            User writer
     ) {
-        this.commentId = commentId;
-        this.postId = postId;
+        this.post = post;
         this.content = content;
         this.createdAt = createdAt;
-        this.writerId = writerId;
-        this.writerNickname = writerNickname;
-        this.writerProfileImage = writerProfileImage;
+        this.writer = writer;
     }
 
     public int getCommentId() {
         return commentId;
     }
 
-    public int getPostId() {
-        return postId;
+    public Post getPost() {
+        return post;
     }
 
     public String getContent() {
@@ -45,16 +73,8 @@ public class Comment {
         return createdAt;
     }
 
-    public int getWriterId() {
-        return writerId;
-    }
-
-    public String getWriterNickname() {
-        return writerNickname;
-    }
-
-    public String getWriterProfileImage() {
-        return writerProfileImage;
+    public User getWriter() {
+        return writer;
     }
 
     // 댓글 수정
