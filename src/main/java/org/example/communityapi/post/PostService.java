@@ -51,15 +51,15 @@ public class PostService {
             throw new IllegalArgumentException("invalid_request");
         }
 
-        Post post = postRepository.save(
+        Post post = new Post(
                 request.getTitle(),
                 request.getContent(),
                 request.getPostImage(),
                 "2026-06-10 10:00:00",
-                user.getUserId(),
-                user.getNickname(),
-                user.getProfileImage()
+                user
         );
+
+        postRepository.save(post);
 
         return new CreatePostResponse(post.getPostId());
     }
@@ -76,7 +76,7 @@ public class PostService {
             throw new IllegalArgumentException("post_not_found");
         }
 
-        if (post.getWriterId() != userId) {
+        if (post.getWriter().getUserId() != userId) {
             throw new IllegalArgumentException("forbidden");
         }
 
@@ -101,11 +101,11 @@ public class PostService {
             throw new IllegalArgumentException("post_not_found");
         }
 
-        if (post.getWriterId() != userId) {
+        if (post.getWriter().getUserId() != userId) {
             throw new IllegalArgumentException("forbidden");
         }
 
-        postRepository.delete(postId);
+        postRepository.delete(post);
     }
 
     // 게시글 목록 조회
@@ -118,10 +118,12 @@ public class PostService {
         while (index < posts.size()) {
             Post post = posts.get(index);
 
+            User writerUser = post.getWriter();
+
             WriterResponse writer = new WriterResponse(
-                    post.getWriterId(),
-                    post.getWriterNickname(),
-                    post.getWriterProfileImage()
+                    writerUser.getUserId(),
+                    writerUser.getNickname(),
+                    writerUser.getProfileImage()
             );
 
             int commentCount = commentRepository.countByPostId(post.getPostId());
@@ -152,10 +154,12 @@ public class PostService {
             throw new IllegalArgumentException("post_not_found");
         }
 
+        User writerUser = post.getWriter();
+
         WriterResponse writer = new WriterResponse(
-                post.getWriterId(),
-                post.getWriterNickname(),
-                post.getWriterProfileImage()
+                writerUser.getUserId(),
+                writerUser.getNickname(),
+                writerUser.getProfileImage()
         );
 
         List<Comment> comments = commentRepository.findByPostId(postId);
