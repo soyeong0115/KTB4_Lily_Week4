@@ -30,13 +30,13 @@ public class CommentService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Post post = postRepository.findById(postId);
+        Post post = postRepository.findById(postId).orElse(null);
 
         if (post == null) {
             throw new IllegalArgumentException("post_not_found");
@@ -46,14 +46,14 @@ public class CommentService {
             throw new IllegalArgumentException("invalid_request");
         }
 
-        Comment comment = commentRepository.save(
-                postId,
+        Comment comment = new Comment(
+                post,
                 request.getContent(),
                 "2026-06-10 10:10:00",
-                user.getUserId(),
-                user.getNickname(),
-                user.getProfileImage()
+                user
         );
+
+        commentRepository.save(comment);
 
         return new CreateCommentResponse(comment.getCommentId());
     }
@@ -64,13 +64,13 @@ public class CommentService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Comment comment = commentRepository.findById(commentId);
+        Comment comment = commentRepository.findById(commentId).orElse(null);
 
         if (comment == null) {
             throw new IllegalArgumentException("comment_not_found");
         }
 
-        if (comment.getWriterId() != userId) {
+        if (comment.getWriter().getUserId() != userId) {
             throw new IllegalArgumentException("forbidden");
         }
 
@@ -89,16 +89,16 @@ public class CommentService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Comment comment = commentRepository.findById(commentId);
+        Comment comment = commentRepository.findById(commentId).orElse(null);
 
         if (comment == null) {
             throw new IllegalArgumentException("comment_not_found");
         }
 
-        if (comment.getWriterId() != userId) {
+        if (comment.getWriter().getUserId() != userId) {
             throw new IllegalArgumentException("forbidden");
         }
 
-        commentRepository.delete(commentId);
+        commentRepository.delete(comment);
     }
 }
