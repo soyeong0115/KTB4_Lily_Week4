@@ -25,12 +25,12 @@ public class Comment {
     private String createdAt;
 
     // 수정 시간
-    //@Column(name = "updated_at")
-    //private String updatedAt;
+    @Column(name = "updated_at")
+    private String updatedAt;
 
     // 삭제 여부
-    //@Column(name = "is_deleted")
-    //private boolean isDeleted;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     // 사용자 번호
     @ManyToOne
@@ -54,6 +54,8 @@ public class Comment {
         this.post = post;
         this.content = content;
         this.createdAt = createdAt;
+        this.updatedAt = createdAt;
+        this.isDeleted = false;
         this.writer = writer;
     }
 
@@ -73,12 +75,26 @@ public class Comment {
         return createdAt;
     }
 
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public User getWriter() {
         return writer;
     }
 
     // 댓글 수정
-    public void update(String content) {
+    public void update(String content, String updatedAt) {
         this.content = content;
+        this.updatedAt = updatedAt;
+    }
+
+    // 댓글 삭제
+    public void delete() {
+        this.isDeleted = true;
     }
 }

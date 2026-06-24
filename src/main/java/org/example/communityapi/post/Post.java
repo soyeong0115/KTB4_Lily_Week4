@@ -34,6 +34,8 @@ public class Post {
     private String updatedAt;
 
     // 댓글수
+    @Column(name = "comment_count")
+    private int commentCount;
 
     // 좋아요수
     @Column(name = "like_count")
@@ -42,6 +44,10 @@ public class Post {
     // 조회수
     @Column(name = "view_count")
     private int viewCount;
+
+    // 삭제 여부
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     // 사용자 번호
     @ManyToOne
@@ -62,8 +68,11 @@ public class Post {
         this.content = content;
         this.postImage = postImage;
         this.createdAt = createdAt;
+        this.updatedAt = createdAt;
+        this.commentCount = 0;
         this.likeCount = 0;
         this.viewCount = 0;
+        this.isDeleted = false;
         this.writer = writer;
     }
 
@@ -87,6 +96,14 @@ public class Post {
         return createdAt;
     }
 
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
     public int getLikeCount() {
         return likeCount;
     }
@@ -95,12 +112,16 @@ public class Post {
         return viewCount;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public User getWriter() {
         return writer;
     }
 
     // 게시글 수정
-    public void update(String title, String content, String postImage) {
+    public void update(String title, String content, String postImage, String updatedAt) {
         if (title != null) {
             this.title = title;
         }
@@ -110,6 +131,13 @@ public class Post {
         if (postImage != null) {
             this.postImage = postImage;
         }
+
+        this.updatedAt = updatedAt;
+    }
+
+    // 게시글 삭제
+    public void delete() {
+        this.isDeleted = true;
     }
 
     // 좋아요 등록 - 증가
@@ -121,6 +149,18 @@ public class Post {
     public void decreaseLikeCount() {
         if (this.likeCount > 0) {
             this.likeCount = this.likeCount - 1;
+        }
+    }
+
+    // 댓글수 증가
+    public void increaseCommentCount() {
+        this.commentCount = this.commentCount + 1;
+    }
+
+    // 댓글수 감소
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount = this.commentCount - 1;
         }
     }
 }
