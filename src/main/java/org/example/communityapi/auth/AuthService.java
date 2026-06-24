@@ -101,7 +101,7 @@ public class AuthService {
 
     // 이메일 형식 검증
     private boolean checkEmailFormat(String email) {
-        return email.matches("^[A-Za-z]+@[A-Za-z]+\\.[A-Za-z]+$");
+        return email.matches("^[A-Za-z0-9]+@[A-Za-z0-9]+\\.[A-Za-z]+$");
     }
 
     // 비밀번호 형식 검증
