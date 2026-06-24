@@ -54,6 +54,7 @@ public class CommentService {
         );
 
         commentRepository.save(comment);
+        post.increaseCommentCount();
 
         return new CreateCommentResponse(comment.getCommentId());
     }
@@ -78,7 +79,7 @@ public class CommentService {
             throw new IllegalArgumentException("invalid_request");
         }
 
-        comment.update(request.getContent());
+        comment.update(request.getContent(), "2026-06-10 10:30:00");
 
         return new UpdateCommentResponse(comment.getCommentId());
     }
@@ -99,6 +100,9 @@ public class CommentService {
             throw new IllegalArgumentException("forbidden");
         }
 
-        commentRepository.delete(comment);
+        comment.delete();
+
+        Post post = comment.getPost();
+        post.decreaseCommentCount();
     }
 }

@@ -37,7 +37,7 @@ public class PostService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        User user = userRepository.findById(userId);
+        User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
@@ -70,7 +70,7 @@ public class PostService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Post post = postRepository.findById(postId);
+        Post post = postRepository.findById(postId).orElse(null);
 
         if (post == null) {
             throw new IllegalArgumentException("post_not_found");
@@ -84,7 +84,12 @@ public class PostService {
             throw new IllegalArgumentException("invalid_request");
         }
 
-        post.update(request.getTitle(), request.getContent(), request.getPostImage());
+        post.update(
+                request.getTitle(),
+                request.getContent(),
+                request.getPostImage(),
+                "2026-06-10 10:20:00"
+        );
 
         return new UpdatePostResponse(post.getPostId());
     }
@@ -95,7 +100,7 @@ public class PostService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Post post = postRepository.findById(postId);
+        Post post = postRepository.findById(postId).orElse(null);
 
         if (post == null) {
             throw new IllegalArgumentException("post_not_found");
@@ -105,7 +110,7 @@ public class PostService {
             throw new IllegalArgumentException("forbidden");
         }
 
-        postRepository.delete(post);
+        post.delete();
     }
 
     // 게시글 목록 조회
@@ -126,13 +131,11 @@ public class PostService {
                     writerUser.getProfileImage()
             );
 
-            int commentCount = commentRepository.countByPostId(post.getPostId());
-
             PostListResponse response = new PostListResponse(
                     post.getPostId(),
                     post.getTitle(),
                     post.getCreatedAt(),
-                    commentCount,
+                    post.getCommentCount(),
                     post.getLikeCount(),
                     post.getViewCount(),
                     writer
@@ -148,7 +151,7 @@ public class PostService {
 
     // 게시글 및 댓글 상세 조회
     public PostDetailResponse getPostDetail(int postId) {
-        Post post = postRepository.findById(postId);
+        Post post = postRepository.findById(postId).orElse(null);
 
         if (post == null) {
             throw new IllegalArgumentException("post_not_found");
@@ -162,7 +165,7 @@ public class PostService {
                 writerUser.getProfileImage()
         );
 
-        List<Comment> comments = commentRepository.findByPostId(postId);
+        List<Comment> comments = commentRepository.findByPostAndIsDeletedFalse(post);
         List<CommentResponse> commentResponses = new ArrayList<>();
 
         int index = 0;
@@ -170,10 +173,12 @@ public class PostService {
         while (index < comments.size()) {
             Comment comment = comments.get(index);
 
+            User commentWriterUser = comment.getWriter();
+
             WriterResponse commentWriter = new WriterResponse(
-                    comment.getWriterId(),
-                    comment.getWriterNickname(),
-                    comment.getWriterProfileImage()
+                    commentWriterUser.getUserId(),
+                    commentWriterUser.getNickname(),
+                    commentWriterUser.getProfileImage()
             );
 
             CommentResponse commentResponse = new CommentResponse(
