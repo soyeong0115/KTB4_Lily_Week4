@@ -13,11 +13,13 @@ import org.example.communityapi.post.dto.WriterResponse;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class PostService {
 
     private final PostRepository postRepository;

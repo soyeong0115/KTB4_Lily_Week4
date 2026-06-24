@@ -9,8 +9,10 @@ import org.example.communityapi.post.PostRepository;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;

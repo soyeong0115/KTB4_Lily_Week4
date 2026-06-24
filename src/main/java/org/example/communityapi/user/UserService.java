@@ -5,8 +5,10 @@ import org.example.communityapi.user.dto.UpdatePasswordRequest;
 import org.example.communityapi.user.dto.UpdateProfileRequest;
 import org.example.communityapi.user.dto.UpdateProfileResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
