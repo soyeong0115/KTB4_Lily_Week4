@@ -9,9 +9,9 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-    // 특정 게시글의 댓글 목록 조회
-    public List<Comment> findByPost(Post post);
+    // 삭제 X 댓글 목록 조회
+    public List<Comment> findByPostAndIsDeletedFalse(Post post);
 
-    // 특정 게시글의 댓글 개수 조회
-    public int countByPost(Post post);
+    // 삭제 X 댓글 개수 조회
+    public int countByPostAndIsDeletedFalse(Post post);
 }
