@@ -3,6 +3,7 @@ package org.example.communityapi.post;
 import org.example.communityapi.comment.Comment;
 import org.example.communityapi.comment.CommentRepository;
 import org.example.communityapi.comment.dto.CommentResponse;
+import org.example.communityapi.like.LikeRepository;
 import org.example.communityapi.post.dto.CreatePostRequest;
 import org.example.communityapi.post.dto.CreatePostResponse;
 import org.example.communityapi.post.dto.PostDetailResponse;
@@ -25,12 +26,14 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     // Repository 주입하기
-    public PostService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
     }
 
     // 게시글 작성
@@ -152,7 +155,7 @@ public class PostService {
     }
 
     // 게시글 및 댓글 상세 조회
-    public PostDetailResponse getPostDetail(int postId) {
+    public PostDetailResponse getPostDetail(Integer userId, int postId) {
         Post post = postRepository.findById(postId).orElse(null);
 
         if (post == null) {
@@ -195,6 +198,12 @@ public class PostService {
             index = index + 1;
         }
 
+        boolean liked = false;
+
+        if (userId != null) {
+            liked = likeRepository.exists(userId, postId);
+        }
+
         return new PostDetailResponse(
                 post.getPostId(),
                 post.getTitle(),
@@ -205,7 +214,8 @@ public class PostService {
                 post.getViewCount(),
                 commentResponses.size(),
                 writer,
-                commentResponses
+                commentResponses,
+                liked
         );
     }
 }
