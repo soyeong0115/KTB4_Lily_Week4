@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = {
+        "http://127.0.0.1:5500",
+        "http://localhost:5500"
+})
 @RestController
 @RequestMapping("/posts")
 public class PostController {
@@ -62,9 +66,12 @@ public class PostController {
 
     // 게시글 및 댓글 상세 조회 API
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<?>> getPostDetail(@PathVariable int postId) {
+    public ResponseEntity<ApiResponse<?>> getPostDetail(
+            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @PathVariable int postId
+    ) {
         try {
-            PostDetailResponse response = postService.getPostDetail(postId);
+            PostDetailResponse response = postService.getPostDetail(userId, postId);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
