@@ -9,11 +9,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = {
-        "http://127.0.0.1:5500",
-        "http://localhost:5500"
-})
+@CrossOrigin(
+        origins = {
+                "http://127.0.0.1:5500",
+                "http://localhost:5500"
+        },
+        methods = {
+                RequestMethod.POST,
+                RequestMethod.PATCH,
+                RequestMethod.DELETE,
+                RequestMethod.OPTIONS
+        },
+        allowedHeaders = "*"
+)
 @RestController
+@RequestMapping("/posts/{postId}/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -24,7 +34,7 @@ public class CommentController {
     }
 
     // 댓글 작성 API
-    @PostMapping("/posts/{postId}/comments")
+    @PostMapping
     public ResponseEntity<ApiResponse<?>> createComment(
             @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
             @PathVariable int postId,
@@ -57,7 +67,7 @@ public class CommentController {
     }
 
     // 댓글 수정 API
-    @PatchMapping("/comments/{commentId}")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<ApiResponse<?>> updateComment(
             @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
             @PathVariable int commentId,
@@ -96,7 +106,7 @@ public class CommentController {
     }
 
     // 댓글 삭제 API
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
             @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
             @PathVariable int commentId
@@ -106,7 +116,7 @@ public class CommentController {
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(ApiResponse.fail("delete_comment_success"));
+                    .body(ApiResponse.success("delete_comment_success", null));
 
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals("unauthorized")) {
