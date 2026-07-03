@@ -23,6 +23,9 @@ public class User {
     @Column(name = "profile_image")
     private String profileImage;
 
+    @Column(name = "is_deleted")
+    private boolean deleted = false;
+
     protected User() {
     }
 
@@ -67,4 +70,6 @@ public class User {
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
+
+    public void delete() { this.deleted = true; }
 }

@@ -120,7 +120,7 @@ public class UserService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        userRepository.delete(user);
+        user.delete();
     }
 
     // 닉네임 형식 검사
