@@ -101,7 +101,7 @@ public class UserController {
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(ApiResponse.fail("update_password_success"));
+                    .body(ApiResponse.success("update_password_success", null));
 
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals("unauthorized")) {
@@ -126,7 +126,7 @@ public class UserController {
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(ApiResponse.fail("delete_user_success"));
+                    .body(ApiResponse.success("delete_user_success", null));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity
