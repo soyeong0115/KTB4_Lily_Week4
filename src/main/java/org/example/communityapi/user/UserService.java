@@ -1,11 +1,9 @@
 package org.example.communityapi.user;
 
-import org.example.communityapi.user.dto.NicknameCheckResponse;
-import org.example.communityapi.user.dto.UpdatePasswordRequest;
-import org.example.communityapi.user.dto.UpdateProfileRequest;
-import org.example.communityapi.user.dto.UpdateProfileResponse;
+import org.example.communityapi.user.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.example.communityapi.user.dto.ProfileResponse;
 
 @Service
 @Transactional
@@ -16,6 +14,22 @@ public class UserService {
     // UserRepository 주입하기
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    // 프로필 조회
+    public ProfileResponse getProfile(Integer userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("unauthorized"));
+
+        return new ProfileResponse(
+                user.getEmail(),
+                user.getNickname(),
+                user.getProfileImage()
+        );
     }
 
     // 프로필 수정

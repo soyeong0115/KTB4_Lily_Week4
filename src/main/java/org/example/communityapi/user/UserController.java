@@ -1,10 +1,7 @@
 package org.example.communityapi.user;
 
 import org.example.communityapi.common.ApiResponse;
-import org.example.communityapi.user.dto.NicknameCheckResponse;
-import org.example.communityapi.user.dto.UpdatePasswordRequest;
-import org.example.communityapi.user.dto.UpdateProfileRequest;
-import org.example.communityapi.user.dto.UpdateProfileResponse;
+import org.example.communityapi.user.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +59,25 @@ public class UserController {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.fail("invalid_request"));
+        }
+    }
+
+    // 프로필 조회 API
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<?>> getProfile(
+            @RequestHeader(value = "X-USER-ID", required = false) Integer userId
+    ) {
+        try {
+            ProfileResponse response = userService.getProfile(userId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(ApiResponse.success("get_profile_success", response));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.fail("unauthorized"));
         }
     }
 
