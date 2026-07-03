@@ -9,6 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(
+        origins = {
+                "http://127.0.0.1:5500",
+                "http://localhost:5500"
+        },
+        methods = {
+                RequestMethod.GET,
+                RequestMethod.PATCH,
+                RequestMethod.DELETE,
+                RequestMethod.OPTIONS
+        },
+        allowedHeaders = "*"
+)
 @RestController
 @RequestMapping("/user")
 public class UserController {
