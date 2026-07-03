@@ -5,6 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = {
+        "http://127.0.0.1:5500",
+        "http://localhost:5500"
+})
 @RestController
 @RequestMapping("/posts/{postId}/likes")
 public class LikeController {
@@ -27,7 +31,7 @@ public class LikeController {
 
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(ApiResponse.fail("create_like_success"));
+                    .body(ApiResponse.success("create_like_success", null));
 
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals("unauthorized")) {
@@ -53,7 +57,7 @@ public class LikeController {
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(ApiResponse.fail("delete_like_success"));
+                    .body(ApiResponse.success("delete_like_success", null));
 
         } catch (IllegalArgumentException e) {
             if (e.getMessage().equals("unauthorized")) {

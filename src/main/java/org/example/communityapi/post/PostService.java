@@ -201,7 +201,11 @@ public class PostService {
         boolean liked = false;
 
         if (userId != null) {
-            liked = likeRepository.exists(userId, postId);
+            User loginUser = userRepository.findById(userId).orElse(null);
+
+            if (loginUser != null) {
+                liked = likeRepository.existsByUserAndPost(loginUser, post);
+            }
         }
 
         return new PostDetailResponse(
