@@ -4,10 +4,13 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Date;
 
 @Component
@@ -61,5 +64,16 @@ public class JwtProvider {
                 .getSubject();
 
         return Integer.parseInt(userId); // 문자열 -> 정수
+    }
+
+    // 인증 완료 객체 생성
+    public Authentication getAuthentication(String token) {
+        Integer userId = getUserId(token);
+
+        return new UsernamePasswordAuthenticationToken(
+                userId,
+                null,
+                Collections.emptyList()
+        );
     }
 }
