@@ -2,13 +2,13 @@ package org.example.communityapi.auth.dto;
 
 public class LoginResponse {
 
-    private int userId;
+    private String accessToken;
 
-    public LoginResponse(int userId) {
-        this.userId = userId;
+    public LoginResponse(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getAccessToken() {
+        return accessToken;
     }
 }
