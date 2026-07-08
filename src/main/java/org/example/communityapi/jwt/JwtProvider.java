@@ -16,7 +16,7 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expirationMillis")
+    @Value("${jwt.expirationMillis}")
     private long expirationMillis;
 
     // 비밀키 서명
