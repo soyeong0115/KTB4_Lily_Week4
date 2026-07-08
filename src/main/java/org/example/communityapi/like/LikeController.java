@@ -3,6 +3,7 @@ package org.example.communityapi.like;
 import org.example.communityapi.common.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {
@@ -23,7 +24,7 @@ public class LikeController {
     // 좋아요 등록 API
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createLike(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int postId
     ) {
         try {
@@ -49,7 +50,7 @@ public class LikeController {
     // 좋아요 취소 API
     @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteLike(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int postId
     ) {
         try {
