@@ -5,6 +5,7 @@ import org.example.communityapi.user.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @CrossOrigin(
         origins = {
@@ -33,7 +34,7 @@ public class UserController {
     // 프로필 수정 API
     @PatchMapping("/profile")
     public ResponseEntity<ApiResponse<?>> updateProfile(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @RequestBody UpdateProfileRequest request
     ) {
         try {
@@ -65,7 +66,7 @@ public class UserController {
     // 프로필 조회 API
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<?>> getProfile(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId
+            @AuthenticationPrincipal Integer userId
     ) {
         try {
             ProfileResponse response = userService.getProfile(userId);
@@ -109,7 +110,7 @@ public class UserController {
     // 비밀번호 수정 API
     @PatchMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @RequestBody UpdatePasswordRequest request
     ) {
         try {
@@ -135,7 +136,7 @@ public class UserController {
     // 회원 탈퇴 API
     @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteUser(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId
+            @AuthenticationPrincipal Integer userId
     ) {
         try {
             userService.deleteUser(userId);

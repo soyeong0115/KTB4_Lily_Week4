@@ -8,6 +8,7 @@ import org.example.communityapi.common.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @CrossOrigin(
         origins = {
@@ -36,7 +37,7 @@ public class CommentController {
     // 댓글 작성 API
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createComment(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int postId,
             @RequestBody CreateCommentRequest request
     ) {
@@ -69,7 +70,7 @@ public class CommentController {
     // 댓글 수정 API
     @PatchMapping("/{commentId}")
     public ResponseEntity<ApiResponse<?>> updateComment(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int commentId,
             @RequestBody UpdateCommentRequest request
     ) {
@@ -108,7 +109,7 @@ public class CommentController {
     // 댓글 삭제 API
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int commentId
     ) {
         try {

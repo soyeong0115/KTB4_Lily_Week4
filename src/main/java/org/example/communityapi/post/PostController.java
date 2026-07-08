@@ -10,6 +10,7 @@ import org.example.communityapi.post.dto.UpdatePostResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class PostController {
     // 게시글 작성 API
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createPost(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @RequestBody CreatePostRequest request
     ) {
         try {
@@ -76,7 +77,7 @@ public class PostController {
     // 게시글 및 댓글 상세 조회 API
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<?>> getPostDetail(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int postId
     ) {
         try {
@@ -96,7 +97,7 @@ public class PostController {
     // 게시글 수정 API
     @PatchMapping("/{postId}")
     public ResponseEntity<ApiResponse<?>> updatePost(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int postId,
             @RequestBody UpdatePostRequest request
     ) {
@@ -135,7 +136,7 @@ public class PostController {
     // 게시글 삭제 API
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
-            @RequestHeader(value = "X-USER-ID", required = false) Integer userId,
+            @AuthenticationPrincipal Integer userId,
             @PathVariable int postId
     ) {
         try {
