@@ -4,6 +4,7 @@ import org.example.communityapi.auth.dto.LoginRequest;
 import org.example.communityapi.auth.dto.LoginResponse;
 import org.example.communityapi.auth.dto.SignupRequest;
 import org.example.communityapi.auth.dto.SignupResponse;
+import org.example.communityapi.jwt.JwtProvider;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
-    // UserRepository를 주입받기
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, JwtProvider jwtProvider) {
         this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     // 회원가입 처리
@@ -58,7 +60,9 @@ public class AuthService {
             throw new IllegalArgumentException("login_failed");
         }
 
-        return new LoginResponse(user.getUserId());
+        String accessToken = jwtProvider.createToken(user.getUserId());
+
+        return new LoginResponse(accessToken);
     }
 
     // 회원가입 요청값 검증
