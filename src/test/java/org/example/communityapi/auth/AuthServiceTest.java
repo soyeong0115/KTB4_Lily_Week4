@@ -1,5 +1,7 @@
 package org.example.communityapi.auth;
 
+import org.example.communityapi.auth.dto.LoginRequest;
+import org.example.communityapi.auth.dto.LoginResponse;
 import org.example.communityapi.auth.dto.SignupRequest;
 import org.example.communityapi.jwt.JwtProvider;
 import org.example.communityapi.user.UserRepository;
@@ -12,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -157,9 +161,42 @@ class AuthServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    private static final String ACCESS_TOKEN = "access-token";
+
     @Test
     @DisplayName("로그인 성공 시 accessToken 반환")
     void login_Success_ReturnsAccessToken() {
+        // given
+        User user = createUser();
+
+        given(userRepository.findByEmail(EMAIL)).willReturn(user);
+        given(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).willReturn(true);
+        given(jwtProvider.createToken(user.getUserId())).willReturn(ACCESS_TOKEN);
+
+        LoginRequest request = createLoginRequest(EMAIL, PASSWORD);
+
+        // when
+        LoginResponse response = authService.login(request);
+
+        // then
+        assertThat(response.getAccessToken()).isEqualTo(ACCESS_TOKEN);
+
+        verify(userRepository).findByEmail(EMAIL);
+        verify(passwordEncoder).matches(PASSWORD, ENCODED_PASSWORD);
+        verify(jwtProvider).createToken(user.getUserId());
+    }
+
+    private User createUser() {
+        return new User(
+                EMAIL,
+                ENCODED_PASSWORD,
+                NICKNAME,
+                PROFILE_IMAGE
+        );
+    }
+
+    private LoginRequest createLoginRequest(String email, String password) {
+        return new LoginRequest(email, password);
     }
 
     @Test
