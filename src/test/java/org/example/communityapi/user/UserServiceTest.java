@@ -109,7 +109,10 @@ class UserServiceTest {
         given(userRepository.findById(USER_ID)).willReturn(Optional.of(user));
         given(userRepository.existsByNickname(duplicatedNickname)).willReturn(true);
 
-        UpdateProfileRequest request = createUpdateProfileRequest(duplicatedNickname, newProfileImage);
+        UpdateProfileRequest request = createUpdateProfileRequest(
+                duplicatedNickname,
+                newProfileImage
+        );
 
         // when + then
         assertThatThrownBy(() -> userService.updateProfile(USER_ID, request))
@@ -162,12 +165,19 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("비밀번호와 비밀번호 확인이 다르면 수정 실패")
-    void updatePassword_PasswordCheckMismatch_ThrowsException() {
-    }
-
-    @Test
     @DisplayName("회원 탈퇴 성공")
     void deleteUser_Success() {
+        // given
+        User user = createUser();
+
+        given(userRepository.findById(USER_ID)).willReturn(Optional.of(user));
+
+        // when
+        userService.deleteUser(USER_ID);
+
+        // then
+        assertThat(user.isDeleted()).isTrue();
+
+        verify(userRepository).findById(USER_ID);
     }
 }
