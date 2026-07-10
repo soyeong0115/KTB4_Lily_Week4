@@ -92,9 +92,9 @@ class AuthServiceTest {
                 PROFILE_IMAGE
         );
 
-        // when
-        // then
-        assertThatThrownBy(() -> authService.signup(request)).isInstanceOf(IllegalArgumentException.class);
+        // when + then
+        assertThatThrownBy(() -> authService.signup(request))
+                .isInstanceOf(IllegalArgumentException.class);
 
         verify(userRepository, never()).save(any(User.class));
     }
@@ -102,6 +102,21 @@ class AuthServiceTest {
     @Test
     @DisplayName("중복 이메일이면 회원가입 실패")
     void signup_DuplicatedEmail_ThrowsException() {
+        // given
+        SignupRequest request = createSignupRequest(
+                EMAIL,
+                PASSWORD,
+                NICKNAME,
+                PROFILE_IMAGE
+        );
+
+        given(userRepository.existsByEmail(EMAIL)).willReturn(true);
+
+        // when + then
+        assertThatThrownBy(() -> authService.signup(request))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
