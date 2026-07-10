@@ -20,6 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -233,11 +234,27 @@ class AuthServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
 
         verify(userRepository).findByEmail(EMAIL);
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
         verify(jwtProvider, never()).createToken(anyInt());
     }
 
     @Test
     @DisplayName("탈퇴한 유저는 로그인 실패")
     void login_DeletedUser_ThrowsException() {
+        // given
+        User user = createUser();
+        user.delete();
+
+        given(userRepository.findByEmail(EMAIL)).willReturn(user);
+
+        LoginRequest request = createLoginRequest(EMAIL, PASSWORD);
+
+        // when & then
+        assertThatThrownBy(() -> authService.login(request))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        verify(userRepository).findByEmail(EMAIL);
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
+        verify(jwtProvider, never()).createToken(anyInt());
     }
 }
