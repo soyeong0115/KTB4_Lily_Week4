@@ -14,8 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -80,6 +84,19 @@ class AuthServiceTest {
     @Test
     @DisplayName("올바른 이메일 주소 형식이 아니면 회원가입 실패")
     void signup_InvalidEmail_ThrowsException() {
+        // given
+        SignupRequest request = createSignupRequest(
+                "invalid-email",
+                PASSWORD,
+                NICKNAME,
+                PROFILE_IMAGE
+        );
+
+        // when
+        // then
+        assertThatThrownBy(() -> authService.signup(request)).isInstanceOf(IllegalArgumentException.class);
+
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
@@ -95,11 +112,6 @@ class AuthServiceTest {
     @Test
     @DisplayName("비밀번호 유효성 통과 못하면 회원가입 실패")
     void signup_InvalidPassword_ThrowsException() {
-    }
-
-    @Test
-    @DisplayName("회원가입 시 비밀번호가 암호화되어 저장된다")
-    void signup_EncodePassword_Success() {
     }
 
     @Test
