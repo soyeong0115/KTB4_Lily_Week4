@@ -42,7 +42,7 @@ class AuthServiceTest {
 
     private static final String EMAIL = "test@test.com";
     private static final String PASSWORD = "Password123!";
-    private static final String NICKNAME = "테스트";
+    private static final String NICKNAME = "닉네임";
     private static final String PROFILE_IMAGE = null;
     private static final String ENCODED_PASSWORD = "encoded-password";
 
