@@ -122,6 +122,21 @@ class AuthServiceTest {
     @Test
     @DisplayName("중복 닉네임이면 회원가입 실패")
     void signup_DuplicatedNickname_ThrowsException() {
+        // given
+        SignupRequest request = createSignupRequest(
+                EMAIL,
+                PASSWORD,
+                NICKNAME,
+                PROFILE_IMAGE
+        );
+
+        given(userRepository.existsByNickname(NICKNAME)).willReturn(true);
+
+        // when + then
+        assertThatThrownBy(() -> authService.signup(request))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
