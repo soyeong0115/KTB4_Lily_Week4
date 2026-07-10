@@ -7,6 +7,7 @@ import org.example.communityapi.auth.dto.SignupResponse;
 import org.example.communityapi.jwt.JwtProvider;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, JwtProvider jwtProvider) {
+    public AuthService(UserRepository userRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 회원가입 처리
@@ -34,9 +37,11 @@ public class AuthService {
             throw new IllegalArgumentException("nickname_duplicated");
         }
 
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
         User user = new User(
                 request.getEmail(),
-                request.getPassword(),
+                encodedPassword,
                 request.getNickname(),
                 request.getProfileImage()
         );
@@ -56,7 +61,7 @@ public class AuthService {
             throw new IllegalArgumentException("login_failed");
         }
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("login_failed");
         }
 
