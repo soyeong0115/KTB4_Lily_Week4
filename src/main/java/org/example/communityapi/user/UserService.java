@@ -1,6 +1,7 @@
 package org.example.communityapi.user;
 
 import org.example.communityapi.user.dto.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.communityapi.user.dto.ProfileResponse;
@@ -10,10 +11,12 @@ import org.example.communityapi.user.dto.ProfileResponse;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // UserRepository 주입하기
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 프로필 조회
@@ -89,6 +92,10 @@ public class UserService {
             throw new IllegalArgumentException("unauthorized");
         }
 
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("invalid_request");
         }
@@ -97,15 +104,13 @@ public class UserService {
             throw new IllegalArgumentException("invalid_request");
         }
 
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new IllegalArgumentException("unauthorized");
-        }
-
         if (!checkPasswordFormat(request.getNewPassword())) {
             throw new IllegalArgumentException("invalid_request");
         }
 
-        user.updatePassword(request.getNewPassword());
+        String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+
+        user.updatePassword(encodedNewPassword);
     }
 
     // 회원 탈퇴
