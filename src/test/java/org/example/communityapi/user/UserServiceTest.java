@@ -1,6 +1,7 @@
 package org.example.communityapi.user;
 
 import org.example.communityapi.user.dto.ProfileResponse;
+import org.example.communityapi.user.dto.UpdateProfileRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,6 +61,31 @@ class UserServiceTest {
     @Test
     @DisplayName("프로필 수정 성공")
     void updateProfile_Success() {
+        // given
+        User user = createUser();
+
+        given(userRepository.findById(USER_ID)).willReturn(Optional.of(user));
+        given(userRepository.existsByNickname("수정닉네임")).willReturn(false);
+
+        UpdateProfileRequest request = createUpdateProfileRequest("수정닉네임", "new-profile-image.png");
+
+
+        // when
+        userService.updateProfile(USER_ID, request);
+
+        // then
+        assertThat(user.getNickname()).isEqualTo("수정닉네임");
+        assertThat(user.getProfileImage()).isEqualTo("new-profile-image.png");
+
+        verify(userRepository).findById(USER_ID);
+        verify(userRepository).existsByNickname("수정닉네임");
+    }
+
+    private UpdateProfileRequest createUpdateProfileRequest(
+            String nickname,
+            String profileImage
+    ) {
+        return new UpdateProfileRequest(nickname, profileImage);
     }
 
     @Test
