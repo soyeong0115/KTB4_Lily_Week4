@@ -142,6 +142,19 @@ class AuthServiceTest {
     @Test
     @DisplayName("비밀번호 유효성 통과 못하면 회원가입 실패")
     void signup_InvalidPassword_ThrowsException() {
+        // given
+        SignupRequest request = createSignupRequest(
+                EMAIL,
+                "invalid-password",
+                NICKNAME,
+                PROFILE_IMAGE
+        );
+
+        // when + then
+        assertThatThrownBy(() -> authService.signup(request))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
