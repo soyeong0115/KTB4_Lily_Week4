@@ -71,5 +71,12 @@ public class User {
         this.password = newPassword;
     }
 
-    public void delete() { this.deleted = true; }
+    // 회원 탈퇴
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
 }

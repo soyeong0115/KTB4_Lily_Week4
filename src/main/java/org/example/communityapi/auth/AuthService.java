@@ -61,6 +61,10 @@ public class AuthService {
             throw new IllegalArgumentException("login_failed");
         }
 
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("login_failed");
         }
