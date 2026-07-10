@@ -15,8 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -202,6 +201,23 @@ class AuthServiceTest {
     @Test
     @DisplayName("비밀번호가 틀리면 로그인 실패")
     void login_WrongPassword_ThrowsException() {
+        // given
+        User user = createUser();
+
+        String wrongPassword = "WrongPassword123!";
+
+        given(userRepository.findByEmail(EMAIL)).willReturn(user);
+        given(passwordEncoder.matches(wrongPassword, ENCODED_PASSWORD)).willReturn(false);
+
+        LoginRequest request = createLoginRequest(EMAIL, wrongPassword);
+
+        // when + then
+        assertThatThrownBy(() -> authService.login(request))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        verify(userRepository).findByEmail(EMAIL);
+        verify(passwordEncoder).matches(wrongPassword, ENCODED_PASSWORD);
+        verify(jwtProvider, never()).createToken(anyInt());
     }
 
     @Test
