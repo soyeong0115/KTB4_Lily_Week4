@@ -7,7 +7,16 @@ public class SignupRequest {
     private String nickname;
     private String profileImage;
 
-    public SignupRequest() {
+    public SignupRequest(
+            String email,
+            String password,
+            String nickname,
+            String profileImage
+    ) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
     }
 
     public String getEmail() {
