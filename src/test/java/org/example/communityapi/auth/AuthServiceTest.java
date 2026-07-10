@@ -223,6 +223,17 @@ class AuthServiceTest {
     @Test
     @DisplayName("존재하지 않는 이메일이면 로그인 실패")
     void login_EmailNotFound_ThrowsException() {
+        // given
+        given(userRepository.findByEmail(EMAIL)).willReturn(null);
+
+        LoginRequest request = createLoginRequest(EMAIL, PASSWORD);
+
+        // when & then
+        assertThatThrownBy(() -> authService.login(request))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        verify(userRepository).findByEmail(EMAIL);
+        verify(jwtProvider, never()).createToken(anyInt());
     }
 
     @Test
