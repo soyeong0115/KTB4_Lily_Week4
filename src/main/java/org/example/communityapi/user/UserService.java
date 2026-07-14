@@ -60,7 +60,10 @@ public class UserService {
             }
         }
 
-        user.updateProfile(request.getNickname(), request.getProfileImage());
+        user.updateProfile(
+                request.getNickname(),
+                request.getProfileImage()
+        );
 
         return new UpdateProfileResponse(user.getNickname(), user.getProfileImage());
     }
