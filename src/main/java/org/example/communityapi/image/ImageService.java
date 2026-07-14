@@ -21,6 +21,12 @@ public class ImageService {
             throw new IllegalArgumentException("invalid_request");
         }
 
+        String contentType = image.getContentType();
+
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("invalid_request");
+        }
+
         // 사용자가 업로드한 원본 파일명
         String originalFilename = image.getOriginalFilename();
 
