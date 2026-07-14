@@ -4,6 +4,7 @@ import org.example.communityapi.comment.dto.CreateCommentRequest;
 import org.example.communityapi.comment.dto.CreateCommentResponse;
 import org.example.communityapi.comment.dto.UpdateCommentRequest;
 import org.example.communityapi.comment.dto.UpdateCommentResponse;
+import org.example.communityapi.common.utils.DateTimeUtils;
 import org.example.communityapi.post.Post;
 import org.example.communityapi.post.PostRepository;
 import org.example.communityapi.user.User;
@@ -48,10 +49,12 @@ public class CommentService {
             throw new IllegalArgumentException("invalid_request");
         }
 
+        String now = DateTimeUtils.now();
+
         Comment comment = new Comment(
                 post,
                 request.getContent(),
-                "2026-06-10 10:10:00",
+                now,
                 user
         );
 
@@ -81,7 +84,9 @@ public class CommentService {
             throw new IllegalArgumentException("invalid_request");
         }
 
-        comment.update(request.getContent(), "2026-06-10 10:30:00");
+        String now = DateTimeUtils.now();
+
+        comment.update(request.getContent(), now);
 
         return new UpdateCommentResponse(comment.getCommentId());
     }

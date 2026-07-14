@@ -3,6 +3,7 @@ package org.example.communityapi.post;
 import org.example.communityapi.comment.Comment;
 import org.example.communityapi.comment.CommentRepository;
 import org.example.communityapi.comment.dto.CommentResponse;
+import org.example.communityapi.common.utils.DateTimeUtils;
 import org.example.communityapi.like.LikeRepository;
 import org.example.communityapi.post.dto.CreatePostRequest;
 import org.example.communityapi.post.dto.CreatePostResponse;
@@ -56,11 +57,13 @@ public class PostService {
             throw new IllegalArgumentException("invalid_request");
         }
 
+        String now = DateTimeUtils.now();
+
         Post post = new Post(
                 request.getTitle(),
                 request.getContent(),
                 request.getPostImage(),
-                "2026-06-10 10:00:00",
+                now,
                 user
         );
 
@@ -89,11 +92,13 @@ public class PostService {
             throw new IllegalArgumentException("invalid_request");
         }
 
+        String now = DateTimeUtils.now();
+
         post.update(
                 request.getTitle(),
                 request.getContent(),
                 request.getPostImage(),
-                "2026-06-10 10:20:00"
+                now
         );
 
         return new UpdatePostResponse(post.getPostId());
