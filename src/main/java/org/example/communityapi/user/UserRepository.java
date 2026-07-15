@@ -3,6 +3,8 @@ package org.example.communityapi.user;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
@@ -14,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     // 닉네임 중복 확인
     public boolean existsByNickname(String nickname);
+
+    // 탈퇴하지 않은 사용자 찾기
+    Optional<User> findByUserIdAndDeletedFalse(Integer userId);
 }
