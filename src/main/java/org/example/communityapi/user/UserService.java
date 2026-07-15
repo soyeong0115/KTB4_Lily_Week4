@@ -13,7 +13,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // UserRepository 주입하기
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -21,12 +20,7 @@ public class UserService {
 
     // 프로필 조회
     public ProfileResponse getProfile(Integer userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("unauthorized"));
+        User user = findActiveUser(userId);
 
         return new ProfileResponse(
                 user.getEmail(),
@@ -37,11 +31,7 @@ public class UserService {
 
     // 프로필 수정
     public UpdateProfileResponse updateProfile(Integer userId, UpdateProfileRequest request) {
-        if (userId == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
-
-        User user = userRepository.findById(userId).orElse(null);
+        User user = findActiveUser(userId);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
@@ -85,11 +75,7 @@ public class UserService {
 
     // 비밀번호 수정
     public void updatePassword(Integer userId, UpdatePasswordRequest request) {
-        if (userId == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
-
-        User user = userRepository.findById(userId).orElse(null);
+        User user = findActiveUser(userId);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
@@ -118,11 +104,7 @@ public class UserService {
 
     // 회원 탈퇴
     public void deleteUser(Integer userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
-
-        User user = userRepository.findById(userId).orElse(null);
+        User user = findActiveUser(userId);
 
         if (user == null) {
             throw new IllegalArgumentException("unauthorized");
@@ -149,5 +131,15 @@ public class UserService {
     // 비밀번호 형식 검사
     private boolean checkPasswordFormat(String password) {
         return password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,20}$");
+    }
+
+    // 인증된 활성 사용자 조회
+    private User findActiveUser(Integer userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        return userRepository.findByUserIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new IllegalArgumentException("unauthorized"));
     }
 }
