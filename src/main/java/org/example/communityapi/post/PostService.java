@@ -29,7 +29,6 @@ public class PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
 
-    // Repository 주입하기
     public PostService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
@@ -39,15 +38,7 @@ public class PostService {
 
     // 게시글 작성
     public CreatePostResponse createPost(Integer userId, CreatePostRequest request) {
-        if (userId == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
-
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
+        User user = findActiveUser(userId);
 
         if (request.getTitle() == null || request.getTitle().isBlank()) {
             throw new IllegalArgumentException("invalid_request");
@@ -74,21 +65,16 @@ public class PostService {
 
     // 게시글 수정
     public UpdatePostResponse updatePost(Integer userId, int postId, UpdatePostRequest request) {
-        if (userId == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
+        User loginUser = findActiveUser(userId);
+        Post post = findActivePost(postId);
 
-        Post post = postRepository.findById(postId).orElse(null);
-
-        if (post == null) {
-            throw new IllegalArgumentException("post_not_found");
-        }
-
-        if (post.getWriter().getUserId() != userId) {
+        if (post.getWriter().getUserId() != loginUser.getUserId()) {
             throw new IllegalArgumentException("forbidden");
         }
 
-        if (request.getTitle() == null && request.getContent() == null && request.getPostImage() == null) {
+        if (request.getTitle() == null
+                && request.getContent() == null
+                && request.getPostImage() == null) {
             throw new IllegalArgumentException("invalid_request");
         }
 
@@ -106,17 +92,10 @@ public class PostService {
 
     // 게시글 삭제
     public void deletePost(Integer userId, int postId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("unauthorized");
-        }
+        User loginUser = findActiveUser(userId);
+        Post post = findActivePost(postId);
 
-        Post post = postRepository.findById(postId).orElse(null);
-
-        if (post == null) {
-            throw new IllegalArgumentException("post_not_found");
-        }
-
-        if (post.getWriter().getUserId() != userId) {
+        if (post.getWriter().getUserId() != loginUser.getUserId()) {
             throw new IllegalArgumentException("forbidden");
         }
 
@@ -166,11 +145,7 @@ public class PostService {
 
     // 게시글 및 댓글 상세 조회
     public PostDetailResponse getPostDetail(Integer userId, int postId) {
-        Post post = postRepository.findById(postId).orElse(null);
-
-        if (post == null) {
-            throw new IllegalArgumentException("post_not_found");
-        }
+        Post post = findActivePost(postId);
 
         User writerUser = post.getWriter();
 
@@ -211,11 +186,8 @@ public class PostService {
         boolean liked = false;
 
         if (userId != null) {
-            User loginUser = userRepository.findById(userId).orElse(null);
-
-            if (loginUser != null) {
-                liked = likeRepository.existsByUserAndPost(loginUser, post);
-            }
+            User loginUser = findActiveUser(userId);
+            liked = likeRepository.existsByUserAndPost(loginUser, post);
         }
 
         return new PostDetailResponse(
@@ -231,5 +203,31 @@ public class PostService {
                 commentResponses,
                 liked
         );
+    }
+
+    // 조회 가능 게시글 조회
+    private Post findActivePost(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("post_not_found"));
+
+        if (post.isDeleted()) {
+            throw new IllegalArgumentException("post_not_found");
+        }
+
+        if (post.getWriter().isDeleted()) {
+            throw new IllegalArgumentException("post_not_found");
+        }
+
+        return post;
+    }
+
+    // 인증된 활성 사용자 조회
+    private User findActiveUser(Integer userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        return userRepository.findByUserIdAndDeletedFalse(userId)
+                .orElseThrow(() -> new IllegalArgumentException("unauthorized"));
     }
 }
