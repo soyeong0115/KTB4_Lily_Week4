@@ -15,7 +15,6 @@ public class LikeService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
 
-    // Repository 주입하기
     public LikeService(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
