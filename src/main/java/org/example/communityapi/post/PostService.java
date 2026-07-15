@@ -125,7 +125,7 @@ public class PostService {
 
     // 게시글 목록 조회
     public List<PostListResponse> getPosts() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findByIsDeletedFalse();
         List<PostListResponse> result = new ArrayList<>();
 
         int index = 0;
@@ -134,6 +134,11 @@ public class PostService {
             Post post = posts.get(index);
 
             User writerUser = post.getWriter();
+
+            if (writerUser.isDeleted()) {
+                index = index + 1;
+                continue;
+            }
 
             WriterResponse writer = new WriterResponse(
                     writerUser.getUserId(),
