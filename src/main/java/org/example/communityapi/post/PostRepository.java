@@ -1,10 +1,12 @@
 package org.example.communityapi.post;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    // 삭제 X 게시글 목록 조회
-    List<Post> findByIsDeletedFalse();
+    // 페이지 단위로 조회
+    Page<Post> findByIsDeletedFalseAndWriter_DeletedFalse(Pageable pageable);
 }

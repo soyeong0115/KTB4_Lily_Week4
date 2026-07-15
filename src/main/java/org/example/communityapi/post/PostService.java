@@ -5,15 +5,13 @@ import org.example.communityapi.comment.CommentRepository;
 import org.example.communityapi.comment.dto.CommentResponse;
 import org.example.communityapi.common.utils.DateTimeUtils;
 import org.example.communityapi.like.LikeRepository;
-import org.example.communityapi.post.dto.CreatePostRequest;
-import org.example.communityapi.post.dto.CreatePostResponse;
-import org.example.communityapi.post.dto.PostDetailResponse;
-import org.example.communityapi.post.dto.PostListResponse;
-import org.example.communityapi.post.dto.UpdatePostRequest;
-import org.example.communityapi.post.dto.UpdatePostResponse;
-import org.example.communityapi.post.dto.WriterResponse;
+import org.example.communityapi.post.dto.*;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,8 +101,20 @@ public class PostService {
     }
 
     // 게시글 목록 조회
-    public List<PostListResponse> getPosts() {
-        List<Post> posts = postRepository.findByIsDeletedFalse();
+    public PostPageResponse getPosts(int page, int size) {
+        if (page < 0 || size <= 0) {
+            throw new IllegalArgumentException("invalid_request");
+        }
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.DESC, "postId")
+        );
+
+        Page<Post> postPage = postRepository.findByIsDeletedFalseAndWriter_DeletedFalse(pageable);
+
+        List<Post> posts = postPage.getContent();
         List<PostListResponse> result = new ArrayList<>();
 
         int index = 0;
@@ -113,11 +123,6 @@ public class PostService {
             Post post = posts.get(index);
 
             User writerUser = post.getWriter();
-
-            if (writerUser.isDeleted()) {
-                index = index + 1;
-                continue;
-            }
 
             WriterResponse writer = new WriterResponse(
                     writerUser.getUserId(),
@@ -140,7 +145,12 @@ public class PostService {
             index = index + 1;
         }
 
-        return result;
+        return new PostPageResponse(
+                result,
+                postPage.getNumber(),
+                postPage.getSize(),
+                postPage.hasNext()
+        );
     }
 
     // 게시글 및 댓글 상세 조회

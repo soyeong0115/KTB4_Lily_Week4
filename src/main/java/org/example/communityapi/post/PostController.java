@@ -1,12 +1,7 @@
 package org.example.communityapi.post;
 
 import org.example.communityapi.common.ApiResponse;
-import org.example.communityapi.post.dto.CreatePostRequest;
-import org.example.communityapi.post.dto.CreatePostResponse;
-import org.example.communityapi.post.dto.PostDetailResponse;
-import org.example.communityapi.post.dto.PostListResponse;
-import org.example.communityapi.post.dto.UpdatePostRequest;
-import org.example.communityapi.post.dto.UpdatePostResponse;
+import org.example.communityapi.post.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,8 +48,11 @@ public class PostController {
 
     // 게시글 목록 조회 API
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostListResponse>>> getPosts() {
-        List<PostListResponse> response = postService.getPosts();
+    public ResponseEntity<ApiResponse<PostPageResponse>> getPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PostPageResponse response = postService.getPosts(page, size);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
