@@ -12,7 +12,6 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    // LikeService 주입
     public LikeController(LikeService likeService) {
         this.likeService = likeService;
     }
@@ -35,6 +34,12 @@ public class LikeController {
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
                         .body(ApiResponse.fail("unauthorized"));
+            }
+
+            if (e.getMessage().equals("like_already_exists")) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body(ApiResponse.fail("like_already_exists"));
             }
 
             return ResponseEntity
@@ -61,6 +66,12 @@ public class LikeController {
                 return ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED)
                         .body(ApiResponse.fail("unauthorized"));
+            }
+
+            if (e.getMessage().equals("like_not_found")) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(ApiResponse.fail("like_not_found"));
             }
 
             return ResponseEntity
