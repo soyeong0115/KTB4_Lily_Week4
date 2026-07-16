@@ -165,7 +165,7 @@ public class PostService {
                 writerUser.getProfileImage()
         );
 
-        List<Comment> comments = commentRepository.findByPostAndIsDeletedFalseAndWriter_IsDeletedFalse(post);
+        List<Comment> comments = commentRepository.findByPostAndIsDeletedFalseAndWriter_DeletedFalse(post);
         List<CommentResponse> commentResponses = new ArrayList<>();
 
         int index = 0;
