@@ -90,7 +90,7 @@ public class UserService {
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("unauthorized");
+            throw new IllegalArgumentException("password_mismatch");
         }
 
         if (!checkPasswordFormat(request.getNewPassword())) {

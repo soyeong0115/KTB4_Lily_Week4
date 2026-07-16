@@ -114,6 +114,12 @@ public class UserController {
                         .body(ApiResponse.fail("unauthorized"));
             }
 
+            if (e.getMessage().equals("password_mismatch")) {
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(ApiResponse.fail("password_mismatch"));
+            }
+
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.fail("invalid_request"));
