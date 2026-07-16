@@ -81,16 +81,16 @@ public class UserService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("unauthorized");
-        }
-
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("invalid_request");
         }
 
         if (request.getNewPassword() == null || request.getNewPassword().isBlank()) {
             throw new IllegalArgumentException("invalid_request");
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("unauthorized");
         }
 
         if (!checkPasswordFormat(request.getNewPassword())) {
