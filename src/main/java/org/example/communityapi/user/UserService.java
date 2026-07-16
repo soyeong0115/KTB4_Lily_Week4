@@ -23,6 +23,7 @@ public class UserService {
         User user = findActiveUser(userId);
 
         return new ProfileResponse(
+                user.getUserId(),
                 user.getEmail(),
                 user.getNickname(),
                 user.getProfileImage()
