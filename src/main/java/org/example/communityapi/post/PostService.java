@@ -142,7 +142,7 @@ public class PostService {
                     post.getPostId(),
                     post.getTitle(),
                     post.getCreatedAt(),
-                    post.getCommentCount(),
+                    commentRepository.countByPostAndIsDeletedFalseAndWriter_DeletedFalse(post),
                     post.getLikeCount(),
                     post.getViewCount(),
                     writer
