@@ -69,11 +69,7 @@ public class CommentService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Comment comment = commentRepository.findById(commentId).orElse(null);
-
-        if (comment == null) {
-            throw new IllegalArgumentException("comment_not_found");
-        }
+        Comment comment = findActiveComment(commentId);
 
         if (comment.getWriter().getUserId() != userId) {
             throw new IllegalArgumentException("forbidden");
@@ -96,11 +92,7 @@ public class CommentService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Comment comment = commentRepository.findById(commentId).orElse(null);
-
-        if (comment == null) {
-            throw new IllegalArgumentException("comment_not_found");
-        }
+        Comment comment = findActiveComment(commentId);
 
         if (comment.getWriter().getUserId() != userId) {
             throw new IllegalArgumentException("forbidden");
@@ -110,5 +102,17 @@ public class CommentService {
 
         Post post = comment.getPost();
         post.decreaseCommentCount();
+    }
+
+    // 조회 가능 댓글 조회
+    private Comment findActiveComment(int commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("comment_not_found"));
+
+        if (comment.isDeleted()) {
+            throw new IllegalArgumentException("comment_not_found");
+        }
+
+        return comment;
     }
 }
