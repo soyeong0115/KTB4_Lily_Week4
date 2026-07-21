@@ -189,11 +189,14 @@ public class PostService {
                     commentWriterUser.getProfileImage()
             );
 
+            boolean isMyComment = userId != null && commentWriterUser.getUserId() == userId;
+
             CommentResponse commentResponse = new CommentResponse(
                     comment.getCommentId(),
                     comment.getContent(),
                     comment.getCreatedAt(),
-                    commentWriter
+                    commentWriter,
+                    isMyComment
             );
 
             commentResponses.add(commentResponse);

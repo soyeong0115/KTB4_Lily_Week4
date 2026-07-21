@@ -8,12 +8,20 @@ public class CommentResponse {
     private String content;
     private String createdAt;
     private WriterResponse writer;
+    private boolean isMyComment;
 
-    public CommentResponse(int commentId, String content, String createdAt, WriterResponse writer) {
+    public CommentResponse(
+            int commentId,
+            String content,
+            String createdAt,
+            WriterResponse writer,
+            Boolean isMyComment
+    ) {
         this.commentId = commentId;
         this.content = content;
         this.createdAt = createdAt;
         this.writer = writer;
+        this.isMyComment = isMyComment;
     }
 
     public int getCommentId() {
@@ -30,5 +38,9 @@ public class CommentResponse {
 
     public WriterResponse getWriter() {
         return writer;
+    }
+
+    public boolean isMyComment() {
+        return isMyComment;
     }
 }
