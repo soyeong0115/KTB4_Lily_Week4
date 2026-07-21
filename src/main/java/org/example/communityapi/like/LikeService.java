@@ -1,7 +1,7 @@
 package org.example.communityapi.like;
 
 import org.example.communityapi.post.Post;
-import org.example.communityapi.post.PostRepository;
+import org.example.communityapi.post.PostValidator;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -11,12 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LikeService {
 
-    private final PostRepository postRepository;
+    private final PostValidator postValidator;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
 
-    public LikeService(PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository) {
-        this.postRepository = postRepository;
+    public LikeService(
+            PostValidator postValidator,
+            UserRepository userRepository,
+            LikeRepository likeRepository
+    ) {
+        this.postValidator = postValidator;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
     }
@@ -33,11 +37,7 @@ public class LikeService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Post post = postRepository.findById(postId).orElse(null);
-
-        if (post == null) {
-            throw new IllegalArgumentException("post_not_found");
-        }
+        Post post = postValidator.findActivePost(postId);
 
         if (likeRepository.existsByUserAndPost(user, post)) {
             throw new IllegalArgumentException("like_already_exists");
@@ -62,11 +62,7 @@ public class LikeService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Post post = postRepository.findById(postId).orElse(null);
-
-        if (post == null) {
-            throw new IllegalArgumentException("post_not_found");
-        }
+        Post post = postValidator.findActivePost(postId);
 
         Like like = likeRepository.findByUserAndPost(user, post);
 

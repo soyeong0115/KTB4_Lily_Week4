@@ -26,12 +26,20 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final PostValidator postValidator;
 
-    public PostService(PostRepository postRepository, CommentRepository commentRepository, UserRepository userRepository, LikeRepository likeRepository) {
+    public PostService(
+            PostRepository postRepository,
+            CommentRepository commentRepository,
+            UserRepository userRepository,
+            LikeRepository likeRepository,
+            PostValidator postValidator
+    ) {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
+        this.postValidator = postValidator;
     }
 
     // 게시글 작성
@@ -64,7 +72,7 @@ public class PostService {
     // 게시글 수정
     public UpdatePostResponse updatePost(Integer userId, int postId, UpdatePostRequest request) {
         User loginUser = findActiveUser(userId);
-        Post post = findActivePost(postId);
+        Post post = postValidator.findActivePost(postId);
 
         if (post.getWriter().getUserId() != loginUser.getUserId()) {
             throw new IllegalArgumentException("forbidden");
@@ -91,7 +99,7 @@ public class PostService {
     // 게시글 삭제
     public void deletePost(Integer userId, int postId) {
         User loginUser = findActiveUser(userId);
-        Post post = findActivePost(postId);
+        Post post = postValidator.findActivePost(postId);
 
         if (post.getWriter().getUserId() != loginUser.getUserId()) {
             throw new IllegalArgumentException("forbidden");
@@ -155,7 +163,7 @@ public class PostService {
 
     // 게시글 및 댓글 상세 조회
     public PostDetailResponse getPostDetail(Integer userId, int postId) {
-        Post post = findActivePost(postId);
+        Post post = postValidator.findActivePost(postId);
 
         User writerUser = post.getWriter();
 
@@ -213,22 +221,6 @@ public class PostService {
                 commentResponses,
                 liked
         );
-    }
-
-    // 조회 가능 게시글 조회
-    private Post findActivePost(Integer postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("post_not_found"));
-
-        if (post.isDeleted()) {
-            throw new IllegalArgumentException("post_not_found");
-        }
-
-        if (post.getWriter().isDeleted()) {
-            throw new IllegalArgumentException("post_not_found");
-        }
-
-        return post;
     }
 
     // 인증된 활성 사용자 조회

@@ -6,7 +6,7 @@ import org.example.communityapi.comment.dto.UpdateCommentRequest;
 import org.example.communityapi.comment.dto.UpdateCommentResponse;
 import org.example.communityapi.common.utils.DateTimeUtils;
 import org.example.communityapi.post.Post;
-import org.example.communityapi.post.PostRepository;
+import org.example.communityapi.post.PostValidator;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final PostValidator postValidator;
     private final UserRepository userRepository;
 
-    // Repository 주입하기
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
+    public CommentService(
+            CommentRepository commentRepository,
+            PostValidator postValidator,
+            UserRepository userRepository
+    ) {
         this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
+        this.postValidator = postValidator;
         this.userRepository = userRepository;
     }
 
@@ -39,11 +42,7 @@ public class CommentService {
             throw new IllegalArgumentException("unauthorized");
         }
 
-        Post post = postRepository.findById(postId).orElse(null);
-
-        if (post == null) {
-            throw new IllegalArgumentException("post_not_found");
-        }
+        Post post = postValidator.findActivePost(postId);
 
         if (request.getContent() == null || request.getContent().isBlank()) {
             throw new IllegalArgumentException("invalid_request");
