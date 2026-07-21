@@ -63,10 +63,11 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<?>> getPostDetail(
             @AuthenticationPrincipal Integer userId,
-            @PathVariable int postId
+            @PathVariable int postId,
+            @RequestParam(name = "countView", defaultValue = "true") boolean countView
     ) {
         try {
-            PostDetailResponse response = postService.getPostDetail(userId, postId);
+            PostDetailResponse response = postService.getPostDetail(userId, postId, countView);
 
             return ResponseEntity
                     .status(HttpStatus.OK)

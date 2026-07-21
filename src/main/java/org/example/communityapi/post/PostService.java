@@ -162,8 +162,20 @@ public class PostService {
     }
 
     // 게시글 및 댓글 상세 조회
-    public PostDetailResponse getPostDetail(Integer userId, int postId) {
+    public PostDetailResponse getPostDetail(Integer userId, int postId, boolean countView) {
         Post post = postValidator.findActivePost(postId);
+
+        User loginUser = null;
+
+        if (userId != null) {
+            loginUser = findActiveUser(userId);
+        }
+
+        boolean isOwner = loginUser != null && post.getWriter().getUserId() == loginUser.getUserId();
+
+        if (countView && !isOwner) {
+            post.increaseViewCount();
+        }
 
         User writerUser = post.getWriter();
 
@@ -204,12 +216,7 @@ public class PostService {
             index = index + 1;
         }
 
-        boolean liked = false;
-
-        if (userId != null) {
-            User loginUser = findActiveUser(userId);
-            liked = likeRepository.existsByUserAndPost(loginUser, post);
-        }
+        boolean liked = loginUser != null && likeRepository.existsByUserAndPost(loginUser, post);
 
         return new PostDetailResponse(
                 post.getPostId(),

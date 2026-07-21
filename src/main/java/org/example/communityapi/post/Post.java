@@ -152,6 +152,11 @@ public class Post {
         }
     }
 
+    // 조회수 증가
+    public void increaseViewCount() {
+        this.viewCount = this.viewCount + 1;
+    }
+
     // 댓글수 증가
     public void increaseCommentCount() {
         this.commentCount = this.commentCount + 1;
