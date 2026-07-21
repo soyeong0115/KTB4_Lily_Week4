@@ -116,7 +116,7 @@ public class UserController {
 
             if (e.getMessage().equals("password_mismatch")) {
                 return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
+                        .status(HttpStatus.BAD_REQUEST)
                         .body(ApiResponse.fail("password_mismatch"));
             }
 
