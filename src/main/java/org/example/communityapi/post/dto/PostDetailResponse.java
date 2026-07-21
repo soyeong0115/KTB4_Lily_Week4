@@ -17,6 +17,7 @@ public class PostDetailResponse {
     private WriterResponse writer;
     private List<CommentResponse> comments;
     private Boolean liked;
+    private boolean isMyPost;
 
     public PostDetailResponse(
             int postId,
@@ -29,7 +30,8 @@ public class PostDetailResponse {
             int commentCount,
             WriterResponse writer,
             List<CommentResponse> comments,
-            Boolean liked
+            Boolean liked,
+            Boolean isMyPost
     ) {
         this.postId = postId;
         this.title = title;
@@ -42,6 +44,7 @@ public class PostDetailResponse {
         this.writer = writer;
         this.comments = comments;
         this.liked = liked;
+        this.isMyPost = isMyPost;
     }
 
     public int getPostId() {
@@ -84,5 +87,11 @@ public class PostDetailResponse {
         return comments;
     }
 
-    public Boolean getLiked() { return liked; }
+    public Boolean getLiked() {
+        return liked;
+    }
+
+    public boolean isMyPost() {
+        return isMyPost;
+    }
 }

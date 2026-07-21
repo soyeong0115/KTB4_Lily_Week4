@@ -229,7 +229,8 @@ public class PostService {
                 commentResponses.size(),
                 writer,
                 commentResponses,
-                liked
+                liked,
+                isOwner
         );
     }
 
