@@ -9,6 +9,7 @@ public class PostListResponse {
     private int likeCount;
     private int viewCount;
     private WriterResponse writer;
+    private String postImage;
 
     public PostListResponse(
             int postId,
@@ -17,7 +18,8 @@ public class PostListResponse {
             int commentCount,
             int likeCount,
             int viewCount,
-            WriterResponse writer
+            WriterResponse writer,
+            String postImage
     ) {
         this.postId = postId;
         this.titlePreview = titlePreview;
@@ -26,6 +28,7 @@ public class PostListResponse {
         this.likeCount = likeCount;
         this.viewCount = viewCount;
         this.writer = writer;
+        this.postImage = postImage;
     }
 
     public int getPostId() {
@@ -54,5 +57,9 @@ public class PostListResponse {
 
     public WriterResponse getWriter() {
         return writer;
+    }
+
+    public String getPostImage() {
+        return postImage;
     }
 }

@@ -145,7 +145,8 @@ public class PostService {
                     commentRepository.countByPostAndIsDeletedFalseAndWriter_DeletedFalse(post),
                     post.getLikeCount(),
                     post.getViewCount(),
-                    writer
+                    writer,
+                    post.getPostImage()
             );
 
             result.add(response);
