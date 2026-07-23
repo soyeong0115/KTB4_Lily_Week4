@@ -141,7 +141,7 @@ public class PostService {
             String content = post.getContent();
 
             String contentPreview = content.length() > 50
-                    ? content.substring(0, 50) + "..."
+                    ? content.substring(0, 50)
                     : content;
 
             PostListResponse response = new PostListResponse(
