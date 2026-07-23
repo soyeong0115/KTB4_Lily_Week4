@@ -138,9 +138,16 @@ public class PostService {
                     writerUser.getProfileImage()
             );
 
+            String content = post.getContent();
+
+            String contentPreview = content.length() > 50
+                    ? content.substring(0, 50) + "..."
+                    : content;
+
             PostListResponse response = new PostListResponse(
                     post.getPostId(),
                     post.getTitle(),
+                    contentPreview,
                     post.getCreatedAt(),
                     commentRepository.countByPostAndIsDeletedFalseAndWriter_DeletedFalse(post),
                     post.getLikeCount(),

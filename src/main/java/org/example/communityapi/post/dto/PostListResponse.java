@@ -4,6 +4,7 @@ public class PostListResponse {
 
     private int postId;
     private String titlePreview;
+    private String contentPreview;
     private String createdAt;
     private int commentCount;
     private int likeCount;
@@ -14,6 +15,7 @@ public class PostListResponse {
     public PostListResponse(
             int postId,
             String titlePreview,
+            String contentPreview,
             String createdAt,
             int commentCount,
             int likeCount,
@@ -23,6 +25,7 @@ public class PostListResponse {
     ) {
         this.postId = postId;
         this.titlePreview = titlePreview;
+        this.contentPreview = contentPreview;
         this.createdAt = createdAt;
         this.commentCount = commentCount;
         this.likeCount = likeCount;
@@ -37,6 +40,10 @@ public class PostListResponse {
 
     public String getTitlePreview() {
         return titlePreview;
+    }
+
+    public String getContentPreview() {
+        return contentPreview;
     }
 
     public String getCreatedAt() {
