@@ -1,0 +1,6 @@
+.gradle
+build
+uploads
+.idea
+*.iml
+HELP.md
