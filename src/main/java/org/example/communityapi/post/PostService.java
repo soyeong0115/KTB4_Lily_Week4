@@ -216,6 +216,36 @@ public class PostService {
         );
     }
 
+    // 인기 게시글 랭킹 조회 (좋아요 -> 조회수 -> 댓글수 순으로 정렬)
+    public List<PostListResponse> getPopularPosts(int limit) {
+        if (limit <= 0) {
+            throw new IllegalArgumentException("invalid_request");
+        }
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "likeCount")
+                .and(Sort.by(Sort.Direction.DESC, "viewCount"))
+                .and(Sort.by(Sort.Direction.DESC, "commentCount"));
+
+        Pageable pageable = PageRequest.of(0, limit, sort);
+
+        Page<Post> postPage = postRepository.findByIsDeletedFalseAndWriter_DeletedFalse(pageable);
+
+        List<Post> posts = postPage.getContent();
+        List<PostListResponse> result = new ArrayList<>();
+
+        int index = 0;
+
+        Post post = posts.get(index);
+
+        while (index < posts.size()) {
+            result.add(toPostListResponse(post));
+
+            index = index + 1;
+        }
+
+        return result;
+    }
+
     // 인증된 활성 사용자 조회
     private User findActiveUser(Integer userId) {
         if (userId == null) {
