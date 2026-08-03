@@ -150,4 +150,16 @@ public class PostController {
                     .body(ApiResponse.fail("post_not_found"));
         }
     }
+
+    // 인기글 조회 API
+    @GetMapping("/popluar")
+    public ResponseEntity<ApiResponse<List<PostListResponse>>> getPopularPosts(
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        List<PostListResponse> response = postService.getPopularPosts(limit);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success("get_popular_posts_success", response));
+    }
 }
