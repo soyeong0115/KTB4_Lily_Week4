@@ -130,33 +130,7 @@ public class PostService {
         while (index < posts.size()) {
             Post post = posts.get(index);
 
-            User writerUser = post.getWriter();
-
-            WriterResponse writer = new WriterResponse(
-                    writerUser.getUserId(),
-                    writerUser.getNickname(),
-                    writerUser.getProfileImage()
-            );
-
-            String content = post.getContent();
-
-            String contentPreview = content.length() > 50
-                    ? content.substring(0, 50)
-                    : content;
-
-            PostListResponse response = new PostListResponse(
-                    post.getPostId(),
-                    post.getTitle(),
-                    contentPreview,
-                    post.getCreatedAt(),
-                    commentRepository.countByPostAndIsDeletedFalseAndWriter_DeletedFalse(post),
-                    post.getLikeCount(),
-                    post.getViewCount(),
-                    writer,
-                    post.getPostImage()
-            );
-
-            result.add(response);
+            result.add(toPostListResponse(post));
 
             index = index + 1;
         }
@@ -250,5 +224,33 @@ public class PostService {
 
         return userRepository.findByUserIdAndDeletedFalse(userId)
                 .orElseThrow(() -> new IllegalArgumentException("unauthorized"));
+    }
+
+    private PostListResponse toPostListResponse(Post post) {
+        User writerUser = post.getWriter();
+
+        WriterResponse writer = new WriterResponse(
+                writerUser.getUserId(),
+                writerUser.getNickname(),
+                writerUser.getProfileImage()
+        );
+
+        String content = post.getContent();
+
+        String contentPreview = content.length() > 50
+                ? content.substring(0, 50)
+                : content;
+
+        return new PostListResponse(
+                post.getPostId(),
+                post.getTitle(),
+                contentPreview,
+                post.getCreatedAt(),
+                commentRepository.countByPostAndIsDeletedFalseAndWriter_DeletedFalse(post),
+                post.getLikeCount(),
+                post.getViewCount(),
+                writer,
+                post.getPostImage()
+        );
     }
 }
