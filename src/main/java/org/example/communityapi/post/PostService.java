@@ -235,9 +235,9 @@ public class PostService {
 
         int index = 0;
 
-        Post post = posts.get(index);
-
         while (index < posts.size()) {
+            Post post = posts.get(index);
+
             result.add(toPostListResponse(post));
 
             index = index + 1;
