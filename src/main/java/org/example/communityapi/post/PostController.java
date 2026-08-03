@@ -152,7 +152,7 @@ public class PostController {
     }
 
     // 인기글 조회 API
-    @GetMapping("/popluar")
+    @GetMapping("/popular")
     public ResponseEntity<ApiResponse<List<PostListResponse>>> getPopularPosts(
             @RequestParam(defaultValue = "5") int limit
     ) {
