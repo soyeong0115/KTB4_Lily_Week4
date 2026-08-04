@@ -43,7 +43,7 @@ class UserServiceTest {
         // given
         User user = createUser();
 
-        given(userRepository.findById(USER_ID)).willReturn(Optional.of(user));
+        given(userRepository.findByUserIdAndDeletedFalse(USER_ID)).willReturn(Optional.of(user));
 
         // when
         ProfileResponse response = userService.getProfile(USER_ID);
@@ -53,7 +53,7 @@ class UserServiceTest {
         assertThat(response.getNickname()).isEqualTo(NICKNAME);
         assertThat(response.getProfileImage()).isEqualTo(PROFILE_IMAGE);
 
-        verify(userRepository).findById(USER_ID);
+        verify(userRepository).findByUserIdAndDeletedFalse(USER_ID);
     }
 
     private User createUser() {
@@ -74,7 +74,7 @@ class UserServiceTest {
         String patchNickname = "중복닉네임";
         String newProfileImage = "new-profile.png";
 
-        given(userRepository.findById(USER_ID)).willReturn(Optional.of(user));
+        given(userRepository.findByUserIdAndDeletedFalse(USER_ID)).willReturn(Optional.of(user));
         given(userRepository.existsByNickname(patchNickname)).willReturn(false);
 
         UpdateProfileRequest request = createUpdateProfileRequest(patchNickname, newProfileImage);
@@ -86,7 +86,7 @@ class UserServiceTest {
         assertThat(user.getNickname()).isEqualTo(patchNickname);
         assertThat(user.getProfileImage()).isEqualTo(newProfileImage);
 
-        verify(userRepository).findById(USER_ID);
+        verify(userRepository).findByUserIdAndDeletedFalse(USER_ID);
         verify(userRepository).existsByNickname(patchNickname);
     }
 
@@ -106,7 +106,7 @@ class UserServiceTest {
         String duplicatedNickname = "중복닉네임";
         String newProfileImage = "new-profile.png";
 
-        given(userRepository.findById(USER_ID)).willReturn(Optional.of(user));
+        given(userRepository.findByUserIdAndDeletedFalse(USER_ID)).willReturn(Optional.of(user));
         given(userRepository.existsByNickname(duplicatedNickname)).willReturn(true);
 
         UpdateProfileRequest request = createUpdateProfileRequest(
@@ -121,7 +121,7 @@ class UserServiceTest {
         assertThat(user.getNickname()).isEqualTo(NICKNAME);
         assertThat(user.getProfileImage()).isEqualTo(PROFILE_IMAGE);
 
-        verify(userRepository).findById(USER_ID);
+        verify(userRepository).findByUserIdAndDeletedFalse(USER_ID);
         verify(userRepository).existsByNickname(duplicatedNickname);
     }
 
@@ -135,7 +135,7 @@ class UserServiceTest {
         String newPassword = "NewPassword123!";
         String encodedNewPassword = "encoded-new-password";
 
-        given(userRepository.findById(USER_ID))
+        given(userRepository.findByUserIdAndDeletedFalse(USER_ID))
                 .willReturn(Optional.of(user));
 
         given(passwordEncoder.matches(currentPassword, PASSWORD)).willReturn(true);
@@ -152,7 +152,7 @@ class UserServiceTest {
         // then
         assertThat(user.getPassword()).isEqualTo(encodedNewPassword);
 
-        verify(userRepository).findById(USER_ID);
+        verify(userRepository).findByUserIdAndDeletedFalse(USER_ID);
         verify(passwordEncoder).matches(currentPassword, PASSWORD);
         verify(passwordEncoder).encode(newPassword);
     }
@@ -170,7 +170,7 @@ class UserServiceTest {
         // given
         User user = createUser();
 
-        given(userRepository.findById(USER_ID)).willReturn(Optional.of(user));
+        given(userRepository.findByUserIdAndDeletedFalse(USER_ID)).willReturn(Optional.of(user));
 
         // when
         userService.deleteUser(USER_ID);
@@ -178,6 +178,6 @@ class UserServiceTest {
         // then
         assertThat(user.isDeleted()).isTrue();
 
-        verify(userRepository).findById(USER_ID);
+        verify(userRepository).findByUserIdAndDeletedFalse(USER_ID);
     }
 }
