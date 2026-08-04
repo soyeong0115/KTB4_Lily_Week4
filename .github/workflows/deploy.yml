@@ -22,6 +22,8 @@ jobs:
           java-version: '21'
 
       - name: Run tests
+        env:
+          JWT_SECRET: ci-test-secret-not-used-in-prod
         run: ./gradlew test --no-daemon
 
       - name: Log in to GHCR
