@@ -1,23 +1,26 @@
 package org.example.communityapi.notification;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.communityapi.notification.dto.NotificationResponse;
 import org.example.communityapi.post.Post;
 import org.example.communityapi.user.User;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationWebSocketHandler notificationWebSocketHandler;
+    private final ObjectMapper objectMapper;
 
     public NotificationService(
             NotificationRepository notificationRepository,
-            NotificationWebSocketHandler notificationWebSocketHandler
+            NotificationWebSocketHandler notificationWebSocketHandler,
+            ObjectMapper objectMapper
     ) {
         this.notificationRepository = notificationRepository;
         this.notificationWebSocketHandler = notificationWebSocketHandler;
+        this.objectMapper = objectMapper;
     }
 
     public void notify(
@@ -43,10 +46,10 @@ public class NotificationService {
                 notification.getCreatedAt()
         );
 
+        try {
+            String json = objectMapper.writeValueAsString(response);
+        } catch (Exception e) {
 
-
-
+        }
     }
-
-
 }
