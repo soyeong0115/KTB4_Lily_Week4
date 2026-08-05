@@ -5,6 +5,7 @@ import org.example.communityapi.comment.dto.CreateCommentResponse;
 import org.example.communityapi.comment.dto.UpdateCommentRequest;
 import org.example.communityapi.comment.dto.UpdateCommentResponse;
 import org.example.communityapi.common.utils.DateTimeUtils;
+import org.example.communityapi.notification.NotificationService;
 import org.example.communityapi.post.Post;
 import org.example.communityapi.post.PostValidator;
 import org.example.communityapi.user.User;
@@ -19,15 +20,18 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostValidator postValidator;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public CommentService(
             CommentRepository commentRepository,
             PostValidator postValidator,
-            UserRepository userRepository
+            UserRepository userRepository,
+            NotificationService notificationService
     ) {
         this.commentRepository = commentRepository;
         this.postValidator = postValidator;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     // 댓글 작성
@@ -59,6 +63,15 @@ public class CommentService {
 
         commentRepository.save(comment);
         post.increaseCommentCount();
+
+        if (post.getWriter().getUserId() != user.getUserId()) {
+            notificationService.notify(
+                    post.getWriter(),
+                    post,
+                    "COMMENT",
+                    user.getNickname() + "님이 댓글을 남겼습니다."
+            );
+        }
 
         return new CreateCommentResponse(comment.getCommentId());
     }
