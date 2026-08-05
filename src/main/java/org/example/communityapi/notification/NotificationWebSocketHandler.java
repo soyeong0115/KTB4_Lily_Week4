@@ -6,19 +6,25 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
     private List<WebSocketSession> sessions = new ArrayList<>();
+    private Map<Integer, WebSocketSession> sessionMap = new HashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.add(session);
+        sessionMap.put((Integer) session.getAttributes().get("userId"), session);
+
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session);
+        sessionMap.remove((Integer) session.getAttributes().get("userId"));
     }
 }
