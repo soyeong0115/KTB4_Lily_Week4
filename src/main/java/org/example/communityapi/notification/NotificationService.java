@@ -48,8 +48,9 @@ public class NotificationService {
 
         try {
             String json = objectMapper.writeValueAsString(response);
+            notificationWebSocketHandler.sendToUser(receiver.getUserId(), json);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 }
