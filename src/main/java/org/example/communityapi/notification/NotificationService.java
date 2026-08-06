@@ -5,9 +5,11 @@ import org.example.communityapi.notification.dto.NotificationResponse;
 import org.example.communityapi.post.Post;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -117,5 +119,10 @@ public class NotificationService {
         }
 
         notificationRepository.deleteByReceiver(user);
+    }
+
+    @Scheduled(cron = "0 0 4 * * *")
+    public void deleteOldNotifications() {
+        notificationRepository.deleteByCreatedAtBefore(LocalDateTime.now().minusDays(14));
     }
 }
