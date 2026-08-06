@@ -40,7 +40,7 @@ public class NotificationController {
     }
 
     // 알림 읽음 처리 API
-    @PatchMapping("/{notificationId}")
+    @PatchMapping("/{notificationId}/read")
     public ResponseEntity<ApiResponse<Void>> markAsRead(
             @AuthenticationPrincipal Integer userId,
             @PathVariable int notificationId
