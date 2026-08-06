@@ -108,4 +108,14 @@ public class NotificationService {
             notification.markAsRead();
         }
     }
+
+    public void deleteAllNotifications(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        notificationRepository.deleteByReceiver(user);
+    }
 }

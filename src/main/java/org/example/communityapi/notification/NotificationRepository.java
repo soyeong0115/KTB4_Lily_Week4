@@ -11,4 +11,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     // 안 읽은 알림 (모두 읽음 처리용)
     List<Notification> findByReceiverAndIsReadFalse(User receiver);
+
+    // 알림 모두 삭제
+    void deleteByReceiver(User receiver);
 }

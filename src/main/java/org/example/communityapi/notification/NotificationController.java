@@ -82,5 +82,21 @@ public class NotificationController {
         }
     }
 
+    // 알림 모두 삭제 API
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteAllNotifications(
+            @AuthenticationPrincipal Integer userId
+    ) {
+        try {
+            notificationService.deleteAllNotifications(userId);
 
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(ApiResponse.success("delete_all_notifications_success", null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.fail("unauthorized"));
+        }
+    }
 }
