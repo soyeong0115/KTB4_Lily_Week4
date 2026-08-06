@@ -1,5 +1,7 @@
 package org.example.communityapi.notification.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public class NotificationResponse {
@@ -42,6 +44,7 @@ public class NotificationResponse {
         return postId;
     }
 
+    @JsonProperty("isRead")
     public boolean isRead() {
         return isRead;
     }
