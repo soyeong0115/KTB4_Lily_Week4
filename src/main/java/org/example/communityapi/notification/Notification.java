@@ -79,4 +79,9 @@ public class Notification {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    // 알림 읽음 처리
+    public void markAsRead() {
+        this.isRead = true;
+    }
 }

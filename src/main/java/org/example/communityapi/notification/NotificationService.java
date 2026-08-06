@@ -6,11 +6,13 @@ import org.example.communityapi.post.Post;
 import org.example.communityapi.user.User;
 import org.example.communityapi.user.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @Service
+@Transactional
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationWebSocketHandler notificationWebSocketHandler;
@@ -79,5 +81,16 @@ public class NotificationService {
                         n.isRead(),
                         n.getCreatedAt()
                 )).toList();
+    }
+
+    public void markAsRead(Integer userId, int notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("notification_not_found"));
+
+        if (notification.getReceiver().getUserId() != userId) {
+            throw new IllegalArgumentException("forbidden");
+        }
+
+        notification.markAsRead();
     }
 }
