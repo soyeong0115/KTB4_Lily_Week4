@@ -93,4 +93,19 @@ public class NotificationService {
 
         notification.markAsRead();
     }
+
+    public void markAllAsRead(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            throw new IllegalArgumentException("unauthorized");
+        }
+
+        List<Notification> notifications =
+                notificationRepository.findByReceiverAndIsReadFalse(user);
+
+        for (Notification notification : notifications) {
+            notification.markAsRead();
+        }
+    }
 }

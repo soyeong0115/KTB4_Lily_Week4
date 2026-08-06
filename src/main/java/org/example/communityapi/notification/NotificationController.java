@@ -63,4 +63,24 @@ public class NotificationController {
                     .body(ApiResponse.fail("notification_not_found"));
         }
     }
+
+    // 알림 모두 읽음 처리 API
+    @PatchMapping("/read-all")
+    public ResponseEntity<ApiResponse<Void>> markAllAsRead(
+            @AuthenticationPrincipal Integer userId
+    ) {
+        try {
+            notificationService.markAllAsRead(userId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(ApiResponse.success("mark_all_as_read_success", null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.fail("unauthorized"));
+        }
+    }
+
+
 }
