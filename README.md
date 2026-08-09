@@ -197,15 +197,15 @@ Mockito 기반 단위 테스트라 DB 연결이나 `JWT_SECRET` 설정 없이 �
 ## Architecture
 
 ```mermaid
-flowchart TB
+flowchart LR
     Nginx["Nginx\n리버스 프록시"]
 
     subgraph API["Spring Boot API"]
-        direction TB
-        Filter["JwtAuthenticationFilter / JwtHandshakeInterceptor\n(Spring Security)"]
+        direction LR
+        Filter["JwtAuthenticationFilter\nJwtHandshakeInterceptor"]
 
-        subgraph Domains["도메인 계층 (Controller → Service → Repository)"]
-            direction LR
+        subgraph Domains["도메인 계층\n(Controller → Service → Repository)"]
+            direction TB
             Auth["auth"]
             Post["post"]
             Comment["comment"]
@@ -214,29 +214,30 @@ flowchart TB
             Image["image"]
         end
 
-        WS["NotificationWebSocketHandler\n(/ws/alarm)"]
         NotiService["notification\n(Service + Scheduler)"]
+        WS["NotificationWebSocketHandler\n(/ws/alarm)"]
+
+        Filter --> Domains
+        Domains -->|"댓글/좋아요 발생"| NotiService
+        NotiService -->|"실시간 push"| WS
     end
 
     DB[("MySQL")]
-    Uploads[("uploads/\n(이미지 파일 저장)")]
+    Uploads[("uploads/")]
 
-    GH["GitHub Actions"] -->|"이미지 빌드/푸시"| GHCR["GHCR"]
-    GHCR -->|"docker compose pull"| API
-    GH -->|"SSH 배포"| EC2["EC2"]
-
-    Nginx -->|"/auth /posts /comments ..."| Filter
-    Nginx -->|"WebSocket Upgrade (/ws/alarm)"| WS
-
-    Filter --> Domains
-    Domains -->|"댓글/좋아요 발생 시 알림 생성"| NotiService
-    NotiService -->|"실시간 push"| WS
-
+    Nginx -->|"/auth /posts ..."| Filter
+    Nginx -->|"WS Upgrade"| WS
     Domains --> DB
     Image --> Uploads
+
+    GH["GitHub Actions"] -->|"빌드/푸시"| GHCR["GHCR"] -->|"pull"| API
+    GH -->|"SSH 배포"| EC2["EC2"]
 ```
 
-요청은 도메인별 Controller → Service → Repository 계층을 거치고, `JwtAuthenticationFilter`가 REST 요청을, `JwtHandshakeInterceptor`가 WebSocket 연결(`/ws/alarm`)을 각각 인증합니다. 댓글·좋아요 같은 이벤트가 발생하면 `notification` 도메인이 알림을 저장하고 `NotificationWebSocketHandler`를 통해 실시간으로 push합니다(14일 지난 알림은 스케줄러가 자동 삭제). `main` 브랜치 푸시 시 GitHub Actions가 이미지를 빌드해 GHCR에 올린 뒤 EC2에 SSH로 접속해 `docker compose pull && up -d`로 배포합니다.
+- 요청은 도메인별 Controller → Service → Repository 계층 통과
+- REST 요청은 `JwtAuthenticationFilter`, WebSocket 연결(`/ws/alarm`)은 `JwtHandshakeInterceptor`가 각각 인증
+- 댓글·좋아요 이벤트 발생 시 `notification` 도메인이 알림 저장 후 `NotificationWebSocketHandler`로 실시간 push(14일 지난 알림은 스케줄러가 자동 삭제)
+- `main` 브랜치 푸시 시 GitHub Actions가 이미지 빌드 후 GHCR에 업로드, EC2에 SSH 접속해 `docker compose pull && up -d`로 배포
 
 <br>
 
