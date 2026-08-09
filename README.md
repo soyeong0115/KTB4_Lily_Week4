@@ -88,7 +88,7 @@ Contributors로 BABBLE에 기여한 사람들을 확인하고, 프로필 드롭�
 
 <br>
 
-## 🗂️ Project Structure
+## 🗂️ Directory Structure
 
 | 폴더명 | 설명 |
 |---|---|
@@ -138,6 +138,57 @@ community-api/
 ```
 
 </details>
+
+<br>
+
+## 🚀 시작하기
+
+### 필수 환경
+
+- Java 21
+
+```bash
+java --version    # Java 21 이상
+```
+
+기본 프로필이 H2 인메모리 DB라 로컬에 MySQL/Docker를 따로 설치하지 않아도 바로 실행됩니다.
+
+### 설치 및 실행
+
+**1. Repository 클론**
+
+```bash
+git clone https://github.com/soyeong0115/KTB4_Lily_Week4.git
+cd KTB4_Lily_Week4
+```
+
+**2. 환경변수 설정**
+
+JWT 발급/검증에 쓰는 `JWT_SECRET`이 필요합니다. 저장소에는 값을 포함하지 않으므로 직접 채워서 실행합니다.
+
+```bash
+export JWT_SECRET=원하는-비밀-문자열
+```
+
+**3. 앱 실행**
+
+```bash
+./gradlew bootRun
+```
+
+기본 포트는 8080입니다.
+
+### 테스트
+
+```bash
+./gradlew test
+```
+
+Mockito 기반 단위 테스트라 DB 연결이나 `JWT_SECRET` 설정 없이 바로 실행됩니다.
+
+### MySQL로 실행하려면
+
+`docker` 프로필(`SPRING_PROFILES_ACTIVE=docker`)을 쓰면 MySQL을 사용합니다. 이 경우 백엔드/DB/프론트엔드를 한 번에 띄우는 `docker-compose.yml`은 [프론트엔드 저장소](https://github.com/soyeong0115/KTB4_Lily_Week7)에 있습니다.
 
 <br>
 
