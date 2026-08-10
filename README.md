@@ -243,65 +243,7 @@ flowchart LR
 
 ## ERD
 
-```mermaid
-erDiagram
-    USERS ||--o{ POSTS : writes
-    USERS ||--o{ COMMENTS : writes
-    USERS ||--o{ LIKES : likes
-    USERS ||--o{ NOTIFICATION : receives
-    POSTS ||--o{ COMMENTS : has
-    POSTS ||--o{ LIKES : has
-    POSTS ||--o{ NOTIFICATION : "relates to"
-
-    USERS {
-        int user_id PK
-        string email
-        string password
-        string nickname
-        string profile_image
-        boolean is_deleted
-    }
-
-    POSTS {
-        int post_id PK
-        string title
-        string content
-        string post_image
-        string created_at
-        string updated_at
-        int comment_count
-        int like_count
-        int view_count
-        boolean is_deleted
-        int user_id FK
-    }
-
-    COMMENTS {
-        int comment_id PK
-        string content
-        string created_at
-        string updated_at
-        boolean is_deleted
-        int user_id FK
-        int post_id FK
-    }
-
-    LIKES {
-        int like_id PK
-        int user_id FK
-        int post_id FK
-    }
-
-    NOTIFICATION {
-        int notification_id PK
-        int receiver_id FK
-        int post_id FK
-        string type
-        string content
-        boolean is_read
-        datetime created_at
-    }
-```
+<img alt="ERD" src="docs/images/erd.png" width="100%" />
 
 <br>
 
